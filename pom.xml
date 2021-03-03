@@ -35,7 +35,6 @@
 
   	<scm>
   		<developerConnection>scm:git:git@github.com:bettyjohb/sfw5-bg-petclinic.git</developerConnection>
-  	  <tag>sfw5-bg-petclinic-0.0.1</tag>
   </scm>
   	
 	<modules>
