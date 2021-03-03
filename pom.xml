@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>guru.springframework5</groupId>
 	<artifactId>sfw5-bg-petclinic</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>sfw5-bg-petclinic</name>
 	<description>SFW5 Version of Spring Petclinic</description>
