@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>guru.springframework5</groupId>
 	<artifactId>sfw5-bg-petclinic</artifactId>
-	<version>0.0.2</version>
+	<version>0.0.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>sfw5-bg-petclinic</name>
 	<description>SFW5 Version of Spring Petclinic</description>
@@ -36,7 +36,7 @@
 
   	<scm>
   		<developerConnection>scm:git:git@github.com:bettyjohb/sfw5-bg-petclinic.git</developerConnection>
-      <tag>sfw5-bg-petclinic-0.0.2</tag>
+      <tag>HEAD</tag>
   </scm>
   	
 	<modules>

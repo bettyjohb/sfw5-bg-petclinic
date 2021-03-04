@@ -3,7 +3,7 @@
   <parent>
     <groupId>guru.springframework5</groupId>
     <artifactId>sfw5-bg-petclinic</artifactId>
-	<version>0.0.2</version>
+	<version>0.0.3-SNAPSHOT</version>
   </parent>
   <artifactId>pet-clinic-data</artifactId>
 
