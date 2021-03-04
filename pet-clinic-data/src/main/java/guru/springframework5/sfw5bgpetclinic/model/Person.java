@@ -1,7 +1,10 @@
 // ***************************************************************************
-// Person  
+// Class:    Person
+// Extends:  BaseEntity
 // 
-// Base model object containing first and last name. 
+// Provides base class for all model (entity) objects that require personal 
+// (person related) information (i.e., first and last name).  This class 
+// adheres to the rules of a JavaBean.
 // 
 // Initially implemented as a POJO (to store in a basic HashMap/other).
 //
@@ -15,16 +18,23 @@
 package guru.springframework5.sfw5bgpetclinic.model;
 
 // @Entity 		// #1 - Annotate with @Entity to identify as JPA entity for DB  
-public class Person {
+public class Person extends BaseEntity {
 	
 	// -----------------------------------------------
 	// Attributes  
 	// -----------------------------------------------
-	// IF ADD ID, CHECK AUTHOR CLASS TO ADD ID BACK IN 
-	//@Id             // #2 - Annotate with @Id to identify as key for Author class
-	//@GeneratedValue(strategy = GenerationType.AUTO)  // #3 - DB will generate key 
-	//private Long id;		
-	
+	/**
+	 * Identifier necessary for all serializable objects in order to 
+	 * uniquely identify the class during serialization (output) and 
+	 * deserialization (input).  If the id at output does not match 
+	 * that at input, an exceptoin is thrown due to different class,
+	 * 
+	 * Note:  ALthough the Serializable interface is inherited through 
+	 * GMSData, the static final UID attribute is not and must be 
+	 * defined in each subclsas. 
+	 */
+	private static final long serialVersionUID = 223761832424562593L;
+
 	private String firstName,
 	               lastName;
 
@@ -37,16 +47,24 @@ public class Person {
 	 */
 	public Person() {
 		super();
+
+		firstName = null;
+		lastName = null;
 	}
 
-	/** 
-	 * Constructor   
-	 * 
-	 * #4 - Used for constructor injection.  
-	 * 
+	/**
+	 * Constructor for Person class. (Used for constructor injection #4)
+	 *
 	 * Do NOT include "id" as parameter.  It is a generated value that 
 	 * Hibernate will inject with setter. 
-     */	 
+	 * 
+	 * @param firstName Person's first name
+	 * @param lastName Person's last name
+	 *  
+	 * @author Betty Jo Booth
+	 * @version 1.0
+	 * @since 1.0
+	 */
 	public Person (String firstName, String lastName) {
 		super();
 		this.firstName = firstName;
@@ -56,7 +74,11 @@ public class Person {
 	// -----------------------------------------------
 	// Getters / Setters
 	// Used by Spring JPA / Hibernate to do Dependency Injection (DI)
-	// if doing setter injection - though constructor injection preferred 
+	// if doing setter injection - though constructor injection preferred
+	//
+	// Validation is done within validate(), not in setters to adhere to 
+	// JavaBean restrictions (expect setters that return void and cannot 
+	// throw exceptions.  
 	// -----------------------------------------------
 
 	public String getFirstName() {
@@ -109,28 +131,10 @@ public class Person {
 			return false;
 		
 		Person po = (Person)o;
-
-		// Id (type Long)  
-		// This is the primary key, so most important to determine if same object.
-//		if (this.id == null) 
-//		{
-//			// False if only this.id is null. Not equal.
-//			if (ao.id != null)
-//				return false;
-//		} 
-//		else if (ao.id == null)
-//		{
-//			// False if only ao.id is null.
-//			if (this.id != null)
-//				return false;
-//		} 
-//		else 
-//		{
-//			// Both have non-null id to compare!
-//			if (!this.id.equals(po.id))
-//				return false;
-//		}
- 
+		
+		// Validate instance variables managed by base class.  If not equal, return false.  
+		if (!(super.equals(o)))
+			return false;
 
 		// First name 
 		if (this.firstName == null) 
@@ -177,6 +181,7 @@ public class Person {
 		
 	}  // end equals(Object)
 
+		
 	/**
 	 * Calculates the object's hash code.
 	 * 
@@ -196,7 +201,7 @@ public class Person {
 	public int hashCode()
 	{
 		final int prime = 17;
-		int result = 1;
+		int result = super.hashCode();
 		
 		// In this algorithm, based on Joshua Bloch's blog, if an attribute is an 
 		// Object (i.e., String) return 0 if null or call hashCode() on it.
@@ -220,6 +225,7 @@ public class Person {
 	@Override
 	public String toString() {
 		return "Person{" +
+	           super.toString() +
 	           "firstName=" + firstName + 
 			   ", lastName=" + lastName + '\'' + 
 			   "}";

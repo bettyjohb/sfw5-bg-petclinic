@@ -1,85 +1,71 @@
 //***************************************************************************
-//Class:  PetType (model object)  
-//Extends: BaseEntity
+//Class:    BaseEntity 	
+//Implements:  Serializable (as part of JavaBean / persisting in DB with Hibernate)
 //
-//Model (entity) object representing PetTypes in the Petclinic system.
-//This class adheres to the rules of a JavaBean.
+//Single abstract base model (entity) class from which all entity objects 
+//are derived, either directly or indirectly through levels of inheritance. 
 //
-//Initially implemented as a POJO (to store in a basic HashMap/other).
-//
-//Updated to a JPA entity object to be persisted into a database.  Therefore,  
-//will require mapping [@Entity, @Id, possibly @Table, @Column, etc.] which is  
-//what turns this POJO into a JPA entity.  Also Constructor as preferred injection 
-//method. Steps #1-4
-//
-//To be a true Java Bean, need setter/getter, default constructor, implement Serializable.
+//BaseEntity provides the following: 
+//    - Used by base-level classes providing common functionality that need 
+//      only know about BaseEntity objects (not each derived entity).  
+//    - Extended by all entity objects persisted to a DB (or even a "key"
+//      based collection).  The Id attribute offers a unique identifier to 
+//      be used as a primary key. [Can't do it only at base level or same for all 
+//      and it relates to identifying a particular object type.] 
+// 
+//To be a true Java Bean
+//  - Implement Serializable (marker base interface w/o methods.  As part of 
+//    serializable, all derived class types that will be persisted will provide
+//    its own serialVersionUID. 
+//  - Have getters / setters 
+//  - Default constructor 
 //*************************************************************************** 
 package guru.springframework5.sfw5bgpetclinic.model;
+import java.io.Serializable;
 
-//@Entity 		// #1 - Annotate with @Entity to identify as JPA entity for DB  
-public class PetType extends BaseEntity {
+public class BaseEntity implements Serializable {
 
-	// -----------------------------------------------
-	// Attributes  
-	// -----------------------------------------------
 	/**
 	 * Identifier necessary for all serializable objects in order to 
 	 * uniquely identify the class during serialization (output) and 
 	 * deserialization (input).  If the id at output does not match 
-	 * that at input, an exceptoin is thrown due to different class,
+	 * that at input, an exception is thrown due to different class,
 	 * 
-	 * Note:  ALthough the Serializable interface is inherited through 
+	 * Note:  Although the Serializable interface is inherited through 
 	 * GMSData, the static final UID attribute is not and must be 
-	 * defined in each subclsas. 
+	 * defined in each subclass. 
 	 */
-	private static final long serialVersionUID = -1517377308231321732L;
-	
-	private String name;
+	private static final long serialVersionUID = 6624281712368887444L;
+
+	// IF ADD ID, CHECK AUTHOR CLASS TO ADD ID BACK IN 
+	//@Id             // #2 - Annotate with @Id to identify as key for Author class
+	//@GeneratedValue(strategy = GenerationType.AUTO)  // #3 - DB will generate key 
+
+	private Long id;    // Use Long (not primitive long) in case of Hibernate since can be null   
 
 	// -----------------------------------------------
-	// Constructors  
+	// Constructors
 	// -----------------------------------------------
 
-	/**
-	 * Default constructor (required of JPA entity objects)
+	/* 
+	 * Default constructor to adhere to Java Bean requirements. 
 	 */
-	public PetType() {
+	public BaseEntity() {
 		super();
-		this.name = null;
 	}
-
-	/** 
-	 * Constructor   
-	 * 
-	 * #4 - Used for constructor injection.  
-	 * 
-	 * Do NOT include "id" as parameter.  It is a generated value that 
-	 * Hibernate will inject with setter.
-     */	 
-	public PetType (String name) {
-		super();
-		this.name = name;
-	}  
-
+	
 	// -----------------------------------------------
 	// Getters / Setters
-	// Used by Spring JPA / Hibernate to do Dependency Injection (DI)
-	// if doing setter injection - though constructor injection preferred 
 	// -----------------------------------------------
 
-	public String getName() {
-		return name;
+	public Long getId() {
+		return id;
 	}
-
-	public void setName(String name) {
-		this.name = name;
+	
+	public void setId(Long id) {
+		this.id = id;
 	}
-
-	// -----------------------------------------------
-	// #5 Methods that override Java default functionality.
-	//    Required for JPA / Hibernate and by Sets. 
-	// -----------------------------------------------
-
+	
 	/**
 	 * Determines if two objects are logically equal.
 	 * 
@@ -104,41 +90,38 @@ public class PetType extends BaseEntity {
 		if (o == null)
 			return false;
 		
-		// Works even if "o" is a derived class of Pet. 
-		if ( !(o instanceof PetType) )
+		// Works even if "o" is a derived class of Person. 
+		if ( !(o instanceof BaseEntity) )
 			return false;
 		
-		PetType po = (PetType)o;
-
-		// Validate instance variables managed by base class.  If not equal, return false.  
-		if (!(super.equals(o)))
-			return false;
-
-		// Name 
-		if (this.name == null) 
+		BaseEntity bo = (BaseEntity)o;
+		
+		// Id 
+		if (this.id == null) 
 		{
-			// False if ONLY this.name is null.
-			if (po.name != null)
+			// False if this.id is null, but bo.id is not.
+			if (bo.id != null)
 				return false;
 		} 
-		else if (po.name == null)
+		else if (bo.id == null)
 		{
-			// False if ONLY po.name is null. 
-			if (this.name != null)
+			// False if bo.id is null, but this.id is not.
+			if (this.id != null)
 				return false;
 		} 
 		else 
 		{
-			// Both have non-null names to compare!
-			if (!this.name.equals(po.name))
+			// Both have non-null names to compare!  [0 if equal]
+			if (this.id.compareTo(bo.id) != 0)
 				return false;
 		}
 
 		// We made it!!!  Objects are equal!!
 		return true;
+		
 	}  // end equals(Object)
 
-	
+			
 	/**
 	 * Calculates the object's hash code.
 	 * 
@@ -158,32 +141,32 @@ public class PetType extends BaseEntity {
 	public int hashCode()
 	{
 		final int prime = 17;
-		int result = super.hashCode();
+		int result = 1;
 		
 		// In this algorithm, based on Joshua Bloch's blog, if an attribute is an 
 		// Object (i.e., String) return 0 if null or call hashCode() on it.
 		// NOTE:  String.hashCode() returns the same int value for strings of the 
 		// same value (i.e., "one" and "one") though they are different actual String objects).
-		result = result * prime + ( (name == null) ? 0 : name.hashCode());
-		
+		result = result * prime + ( (id == null) ? 0 : id.intValue());
+	
 		return result;
 	}  // end hashCode()
 
 	/**
-	 * Provides a reader friendly, string representation of PetType object.   
+	 * Provides a reader friendly, string representation of BaseEntity object.   
 	 * 
 	 * This method overrides the default functionality provided by the 
 	 * java.lang.Object.toString() method.  Useful for logging and/or 
 	 * debugging. 
 	 * 
-	 * @return String containing JSON style representation of Pet object. 
+	 * @return String containing JSON style representation of BaseEntity object. 
 	 */
 	@Override
 	public String toString() {
-		return "PetType{" +
-               super.toString() + 
-	           "name=" + name + 
+		
+		return "BaseEntity{" +
+		       "id=" + id.toString() + 
 			   "}";
 	}  // end toString()
 
-}  // end class PetType
+}  // end BaseEntity 

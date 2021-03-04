@@ -1,5 +1,9 @@
 //***************************************************************************
 //Class:  Pet (model object)  
+//Extends: BaseEntity
+//
+// Model (entity) object representing Pets in the Petclinic system.
+// This class adheres to the rules of a JavaBean.
 //
 //Initially implemented as a POJO (to store in a basic HashMap/other).
 //
@@ -15,15 +19,22 @@ package guru.springframework5.sfw5bgpetclinic.model;
 import java.time.LocalDate;
 
 //@Entity 		// #1 - Annotate with @Entity to identify as JPA entity for DB  
-public class Pet {
+public class Pet extends BaseEntity {
 
 	// -----------------------------------------------
 	// Attributes  
 	// -----------------------------------------------
-	// IF ADD ID, CHECK AUTHOR CLASS TO ADD ID BACK IN 
-	//@Id             // #2 - Annotate with @Id to identify as key for Author class
-	//@GeneratedValue(strategy = GenerationType.AUTO)  // #3 - DB will generate key 
-	//private Long id;		
+	/**
+	 * Identifier necessary for all serializable objects in order to 
+	 * uniquely identify the class during serialization (output) and 
+	 * deserialization (input).  If the id at output does not match 
+	 * that at input, an exceptoin is thrown due to different class,
+	 * 
+	 * Note:  ALthough the Serializable interface is inherited through 
+	 * GMSData, the static final UID attribute is not and must be 
+	 * defined in each subclsas. 
+	 */
+	private static final long serialVersionUID = 1986885758403978000L;
 
 	private PetType petType;
 	private Owner owner;
@@ -38,6 +49,9 @@ public class Pet {
 	 */
 	public Pet() {
 		super();
+		this.petType = null;
+		this.owner = null;
+		this.birthDate = null;
 	}
 
 	/** 
@@ -47,6 +61,10 @@ public class Pet {
 	 * 
 	 * Do NOT include "id" as parameter.  It is a generated value that 
 	 * Hibernate will inject with setter.
+	 *
+	 * @param petType Pet type / breed 
+	 * @param owner Owner of pet
+	 * @param birthDate Pet data of birth
   */	 
 	public Pet (PetType petType, Owner owner, LocalDate birthDate) {
 		super();
@@ -115,27 +133,9 @@ public class Pet {
 		
 		Pet po = (Pet)o;
 
-		// Id (type Long)  
-		// This is the primary key, so most important to determine if same object.
-//		if (this.id == null) 
-//		{
-//			// False if only this.id is null. Not equal.
-//			if (ao.id != null)
-//				return false;
-//		} 
-//		else if (ao.id == null)
-//		{
-//			// False if only ao.id is null.
-//			if (this.id != null)
-//				return false;
-//		} 
-//		else 
-//		{
-//			// Both have non-null id to compare!
-//			if (!this.id.equals(ao.id))
-//				return false;
-//		}
-
+		// Validate instance variables managed by base class.  If not equal, return false.  
+		if (!(super.equals(o)))
+			return false;
 
 		// PetType 
 		if (this.petType == null) 
@@ -201,6 +201,7 @@ public class Pet {
 		return true;
 		
 	}  // end equals(Object)
+		
 
 	/**
 	 * Calculates the object's hash code.
@@ -221,7 +222,7 @@ public class Pet {
 	public int hashCode()
 	{
 		final int prime = 17;
-		int result = 1;
+		int result = super.hashCode();
 		
 		// In this algorithm, based on Joshua Bloch's blog, if an attribute is an 
 		// Object (i.e., String) return 0 if null or call hashCode() on it.
@@ -246,6 +247,7 @@ public class Pet {
 	@Override
 	public String toString() {
 		return "Pet{" +
+	           super.toString() + 
 	           "petType=" + petType + 
 			   ", owner=" + owner + '\'' +
 			   ", birthDate=" + birthDate + '\'' +
@@ -253,5 +255,3 @@ public class Pet {
 	}  // end toString()
 
 }  // end class Pet
- 
-
