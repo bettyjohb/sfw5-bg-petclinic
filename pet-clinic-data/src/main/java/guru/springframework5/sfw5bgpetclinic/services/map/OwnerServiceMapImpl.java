@@ -55,6 +55,10 @@ public class OwnerServiceMapImpl extends AbstractMapService<Owner, Long> impleme
 
 	// -------------------------------------------------------
 	// Implementation of OrderService 
+	// This is not in AbstractMapService/BaseService, it is in VetService.
+	// Therefore, unlike overriding BaseService methods <T, ID>,
+	// that just call super.someMethod, we implement it here
+	// since its a VetService interface w/o an implementation. 
 	// -------------------------------------------------------
     public Owner findByLastName(String lastName) {
 
@@ -71,6 +75,10 @@ public class OwnerServiceMapImpl extends AbstractMapService<Owner, Long> impleme
     
 	// -------------------------------------------------------
 	// Implementation of BaseService (extended by OrderService)
+	// -------------------------------------------------------
+    // AbstractMapService provided generic implementation of BaseService.
+    // Now override those AbstractMapService methods with specific <Vet, Long> types.
+    // These methods will call super.sameMethod(...)
 	// -------------------------------------------------------
 	
 	/**
@@ -117,9 +125,4 @@ public class OwnerServiceMapImpl extends AbstractMapService<Owner, Long> impleme
 		super.deleteById(id);
 	}
 
-}
-
-
-
-
-
+}  // end class OwnerServiceMapImpl

@@ -26,7 +26,7 @@
 //    Therefore, the main goal of the base and entity level interfaces is the 
 //    contract of methods.  If you want to add a new "find" method, can add to 
 //    BaseService then all entity service interfaces (OrderService) inherit automagically. 
-//    Then, any IMPLs would haev to write.
+//    Then, any IMPLs would have to write.
 //    
 //    The entity service interfaces are the ones the controllers have.  For example, 
 //    OrderController has a OrderService interface type.  It has all method in BaseService
@@ -37,7 +37,13 @@
 //  - AbstractMapService is not referenced by other classes ("has a"). What it does is 
 //    provides the primary persistence type (i.e., HashMap<T, ID>) and generic functionality 
 //    implemented in its methods. All of its methods are implemented.  The class is abstract
-//    only to prevent it being instantiated since it does not have a specific entity type. 
+//    only to prevent it being instantiated since it does not have a specific entity type.
+//    NOTE:  This abstract class also keeps the generic HashMap<T,ID> for storing entities 
+//           by Key, Value.  Once a class extends (i.e., OrderServiceMapImpl) it does 
+//           so with exact types "...extends AbstractMapSerivce <Order, Long>, then when 
+//           instantiated only entities of that type will ever be in that instance's HashMap.
+//           This is because derived classes override methods with 
+//           someMethod(Order, Long) that calls up to super.someMethod(T,ID).
 //
 //  - Entity specific service impls come in here...
 //    OrderServiceMapImpl extends AbstractMapService and implements OrderService.

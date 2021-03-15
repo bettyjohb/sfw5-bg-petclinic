@@ -6,8 +6,14 @@
 //This is not the type referenced by using classes.  It just provides the common 
 //code shared by all Map IMPLs that extend it. [The methods provided essentially 
 //match those in BaseService interface - though interface not implemented here.]
-//Using classes keep a reference to <Entity>Service interface and IMPL is injected
-//at runtime due to @Profile. 
+//The using classes keep a reference to <Entity>Service interface (i.e., OrderService)
+//and IMPL is injected at runtime due to @Profile. 
+//
+//This class also keeps the generic HashMap<T,ID> for storing entities by Key, Value.
+//NOTE:  Once a class extends (i.e., OrderServiceMapImpl), when instantiated
+//       only entities of that type will ever be in that instance's HashMap. 
+//       (Note:  Derived classes override methods with 
+//               someMethod(Order, Long) that calls up to super.someMethod(T,ID).
 //
 //Focus will be on CRUD related services for entities.  This layer is 
 //also responsible for interacting with the Repository.  The type of 
@@ -59,7 +65,7 @@ public abstract class AbstractMapService<T, ID> {
 	 * Save a given entity.  Use the returned instance for further operations as the save operation 
 	 * might have changed the entity instance completely.
 	 *  
-	 * @param id to be key for map
+	 * @param id to be key for map (request because don't know object)
 	 * @param non-null object
 	 * @return the saved entity (never null) 
 	 */
@@ -100,9 +106,11 @@ public abstract class AbstractMapService<T, ID> {
 		// Note that the entry set refers back to the orig HashMap when "remove" 
 		// so will removeIf removes from actual HashMap. 
 		// [Also recall, we provided "logical" equals() for our entity objects.]  
-		// Therefore, removesIf removes "entry" if entry.getValue().equals(object).
+		// Therefore, removesIf removes "entry" if entry.getValue().equals(object)
+		// [meaning is logically equal - - has same values (not reference)].
 		// It looks at each entry in entrySet to see if matches.  
 		// Note:  -> is lambda expression [ (0+ params) -> function ]
+		//        In this form, may cause to look through all values - (still learning).  
 		//        Requires entities to have proper equals method. 
 		map.entrySet().removeIf(entry -> entry.getValue().equals(object));
 	}
