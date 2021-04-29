@@ -22,21 +22,36 @@
 package guru.springframework5.sfw5bgpetclinic.controllers;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import guru.springframework5.sfw5bgpetclinic.services.OwnerService;
 
 @Controller     // #1 - Tell Spring this is a Spring MVC Controller to be instantiated.
 @RequestMapping("/owners")    // Set up that this controller looks in owners 
 public class OwnerController {
 
+	private final OwnerService ownerService;   // Interface - So actual instance can be MAP, DB, etc. 
+	
+	// @Autowired not required in Spring 5. 
+	// Component Scan sees @Controller and instantiates OwnerController bean; thereby using Constructor and 
+	// injecting OwnerService (which is a @Service and therefore available for Spring Context to see).  
+	public OwnerController (OwnerService ownerService) {
+		this.ownerService = ownerService;
+	}  // end constructor
+	
 	// #2 - Tell Spring this is a Controller method to handle HTTP requests.
 	//      Specifically, this method handles if user ends URL with /owners, /owners/index or /owners/index.html.
 	//      If you run the app will see RequestMappingHandlerMapping list these 3 types handled.
 	//      - Request owners from service to add to Model.  
-    //      - Returns core name of Thymeleaf template. 
+    //      - Returns core name of Thymeleaf template where owners will be displayed. 
 	  @RequestMapping({"", "/", "/index", "index.html"})   // Controller level RequestMapping looks for these in owners
-		public String listOwners() {
+	public String listOwners(Model model) {
+		  
+		// Add owners to the model for use in the view.
+		model.addAttribute ("owners", ownerService.findAll());
 	  	return "owners/index";  // Spring looks in templates in owners folder for index.html since Thymeleaf. 
-	  	                      // If JSP, ViewResolver would provide pre/suffix to build full jsp file/path. 
-	  }
+	  	                        // If JSP, ViewResolver would provide pre/suffix to build full jsp file/path. 
+	 }
 
 }  // end class OwnerController
