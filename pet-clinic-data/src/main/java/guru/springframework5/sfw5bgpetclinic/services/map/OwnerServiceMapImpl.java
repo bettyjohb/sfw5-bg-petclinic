@@ -14,6 +14,8 @@
 //                            [2] OwnerController "has a" OwnerService interface so can 
 //                            inject any IMPL that implements it (i.e. OwnerServiceMapImpl,
 //                            OwnerServiceJPAImpl, etc.) based on @Profile.  
+//Stereotype:   @Service    Component Scan will pick up and instantiate to keep in Spring Context as Spring Bean.
+//                            By default, Singleton scope (only 1 instance ever).  Okay - services don't have state.
 //
 // OwnerServiceMapImpl is not the type referenced by using classes.  Reference OrderService.   
 // Storage is in HashMap managed in BaseServiceMapImpl (that is our method of persistence).
@@ -41,9 +43,12 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.stereotype.Service;
+
 import guru.springframework5.sfw5bgpetclinic.model.Owner;
 import guru.springframework5.sfw5bgpetclinic.services.OwnerService;
 
+@Service
 public class OwnerServiceMapImpl extends AbstractMapService<Owner, Long> implements OwnerService {
 
 	// -------------------------------------------------------

@@ -14,6 +14,8 @@
 //                          [2] PetController "has a" PetService interface so can 
 //                          inject any IMPL that implements it (i.e. PetServiceMapImpl,
 //                          PetServiceJPAImpl, etc.) based on @Profile.  
+//Stereotype:   @Service    Component Scan will pick up and instantiate to keep in Spring Context as Spring Bean.
+//                          By default, Singleton scope (only 1 instance ever).  Okay - services don't have state.
 //
 //PetServiceMapImpl is not the type referenced by using classes.  Reference OrderService.   
 //Storage is in HashMap managed in BaseServiceMapImpl (that is our method of persistence).
@@ -40,9 +42,13 @@ package guru.springframework5.sfw5bgpetclinic.services.map;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
+import org.springframework.stereotype.Service;
+
 import guru.springframework5.sfw5bgpetclinic.model.Pet;
 import guru.springframework5.sfw5bgpetclinic.services.PetService;
 
+@Service
 public class PetServiceMapImpl extends AbstractMapService<Pet, Long> implements PetService {
 
 	// -------------------------------------------------------

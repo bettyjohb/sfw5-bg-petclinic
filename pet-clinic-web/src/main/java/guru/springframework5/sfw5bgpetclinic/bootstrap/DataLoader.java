@@ -29,17 +29,17 @@ public class DataLoader implements CommandLineRunner {
 	private final OwnerService ownerService;
 	private final VetService vetService;      
 	
-	// Since @Component, component scan will instantiate at startup thereby calling default constructor. 
-	public DataLoader() {
-		// Utilize existing services the implement the CRUD operations to initilze mock data.
-		// BAD - WILL USE DI (not new) in future change. 
-		ownerService = new OwnerServiceMapImpl();
-		vetService = new VetServiceMapImpl();
+	// Don't need @Autowired in Spring 5. 
+	// Since @Component, component scan will instantiate at startup thereby calling default constructor.
+	// Since only one IMPL (MapImpl), Spring finds it and injects it for you since the IMPLs are @Service. 
+	public DataLoader(OwnerService ownerService, VetService vetService) {
+		this.ownerService = ownerService;
+		this.vetService = vetService;
 	}  // end Constructor
 	
 	@Override
 	public void run(String... args) throws Exception {
-		
+		// Utilize existing services the implement the CRUD operations to initilze mock data.
 		Owner owner1 = new Owner();
 		owner1.setId(1L);
 		owner1.setFirstName("Michael");
