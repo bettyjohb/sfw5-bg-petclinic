@@ -21,11 +21,27 @@
 //*************************************************************************** 
 package guru.springframework5.sfw5bgpetclinic.controllers;
 
+import java.util.Set;
+
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import guru.springframework5.sfw5bgpetclinic.model.Vet;
+import guru.springframework5.sfw5bgpetclinic.services.VetService;
 
 @Controller      // #1 - Tell Spring this is a Spring MVC Controller to be instantiated. 
 public class VetController {
+
+	private final VetService vetService;   // Interface - So actual instance can be MAP, DB, etc. 
+	
+	// @Autowired not required in Spring 5. 
+	// Component Scan sees @Controller and instantiates VetController bean; thereby using Constructor and 
+	// injecting VetService (which is a @Service and therefore available for Spring Context to see).
+	// So far, only one VetService IMPL (for Map) therefore no need Profile to determine which to use.
+	public VetController (VetService vetService) {
+		this.vetService = vetService;
+	}  // end constructor
 
 	// #2 - Tell Spring this is a Controller method to handle HTTP requests.
 	//      Specifically, this method handles if user ends URL with /vets, /vets/index or /vets/index.html.
@@ -34,7 +50,8 @@ public class VetController {
 	//      - Request vets from service to add to Model.  
     //      - Returns core name of Thymeleaf template. 
     @RequestMapping({"/vets", "/vets/index", "/vets/index.html"})
-	public String listVets() {
+	public String listVets(Model model) {
+    	model.addAttribute("vets", vetService.findAll());
     	return "vets/index";  // Spring looks in templates in vets folder for index.html since Thymeleaf. 
     	                      // If JSP, ViewResolver would provide pre/suffix to build full jsp file/path. 
     }

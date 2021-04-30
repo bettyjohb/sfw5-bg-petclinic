@@ -35,7 +35,8 @@ public class OwnerController {
 	
 	// @Autowired not required in Spring 5. 
 	// Component Scan sees @Controller and instantiates OwnerController bean; thereby using Constructor and 
-	// injecting OwnerService (which is a @Service and therefore available for Spring Context to see).  
+	// injecting OwnerService (which is a @Service and therefore available for Spring Context to see). 
+	// So far, only one OwnerService IMPL (for Map) therefore no need Profile to determine which to use. 
 	public OwnerController (OwnerService ownerService) {
 		this.ownerService = ownerService;
 	}  // end constructor
