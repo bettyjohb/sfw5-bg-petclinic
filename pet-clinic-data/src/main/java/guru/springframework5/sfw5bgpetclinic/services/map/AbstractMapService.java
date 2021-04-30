@@ -42,18 +42,24 @@
 //***************************************************************************
 package guru.springframework5.sfw5bgpetclinic.services.map;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
-public abstract class AbstractMapService<T, ID> {
+import guru.springframework5.sfw5bgpetclinic.model.BaseEntity;
+
+//T can be BaseEntity or anything that extends it - Important for save() so be able to use getId(). 
+//ID can be Long or anything that extends it for any Map IMPLs - Important for the private method getNextId().
+public abstract class AbstractMapService<T extends BaseEntity, ID extends Long> {    
 	
 	// Note: When each entity service implements (i.e., OwnerServiceMapImpl), that IMPL 
 	// will work with only that entity (i.e., Owner), so HashMap will only contain that 
 	// entity (i.e, Owners) since declare class as MyEntityServiceMapImpl <MyEntityType, MyKeyType> 
 	// [i.e., OwnerServiceMapImpl<Owner, Long>.
-	protected Map<ID, T> map = new HashMap<>();  // ID is key, Type is Pet, Vet, Owner, etc. 
+	protected Map<Long, T> map = new HashMap<>();  // ID is made Long for save() call to getId(). T is Pet, Vet, Owner, etc. 
 
 	// -------------------------------------------
 	// BY DEFAULT, THESE METHODS ARE PACKAGE-PRIVATE.
@@ -62,15 +68,24 @@ public abstract class AbstractMapService<T, ID> {
 	// Create / Update
 
 	/**
-	 * Save a given entity.  Use the returned instance for further operations as the save operation 
-	 * might have changed the entity instance completely.
+	 * Save a given entity.  If id of object is null, generate and create new object; otherwise update existing. 
+	 * Calling source should use the returned instance for further operations as the save operation might have 
+	 * changed the entity instance completely.
 	 *  
-	 * @param id to be key for map (request because don't know object)
-	 * @param non-null object
+	 * @param non-null object (BaseEntity or extension so has getId()
 	 * @return the saved entity (never null) 
 	 */
-	T save (ID id, T object) {
-		map.put(id, object);
+	T save (T object) {
+		// Check for an id.  If none, generate. 
+		if (object != null) {               
+			if (object.getId() == null)  {   
+				object.setId(getNextId());  // No ID, so generate ID - creating new object
+			}
+			map.put(object.getId(), object);
+		} else {
+			throw new RuntimeException("Object cannot be null");
+		}
+		
 		return object;
 	}
 
@@ -124,5 +139,15 @@ public abstract class AbstractMapService<T, ID> {
 		map.remove(id);
 	}
 
+	private Long getNextId() {
+		Long nextId = null;
+		try {
+			nextId = Collections.max(map.keySet()) + 1;   // If 1+ entities exist, take greatest Id and add 1 for next id
+		} catch (NoSuchElementException e) {
+			nextId = 1L;                                  // If no entities, exception.  Return 1L as first id. 
+		}
+		
+		return nextId;
+	}
 }  // end AbstractMapService
 
