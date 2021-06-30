@@ -16,6 +16,8 @@
 // *************************************************************************** 
 package guru.springframework5.sfw5bgpetclinic.model;
 
+import java.util.Set;
+
 //@Entity 		// #1 - Annotate with @Entity to identify as JPA entity for DB  
 public class Owner extends Person {
 
@@ -30,6 +32,8 @@ public class Owner extends Person {
 	 * defined in each subclass. 
 	 */
 	private static final long serialVersionUID = -4063886627796020648L;
+
+	private Set<Pet> pets;    // Owners can have 1 or more pets. 
 
 	// -----------------------------------------------
 	// Constructors  
@@ -52,6 +56,13 @@ public class Owner extends Person {
 	// throw exceptions.  
 	// -----------------------------------------------
 
+	public Set<Pet> getPets() {
+		return pets;
+	}
+	
+	public void setPets(Set<Pet> pets) {
+		this.pets = pets;
+	}
 	
 	
 	// -----------------------------------------------
@@ -138,5 +149,6 @@ public class Owner extends Person {
 				super.toString() +
 			   "}";
 	}  // end toString()
+
 
 }  // end class Owner
