@@ -1,27 +1,28 @@
-// ***************************************************************************
-// Class:    Vet	
-// Extends:  Person 
-// 
-//Model (entity) object representing Vets in the Petclinic system.
-//Each Vet can have a set of specialties a/w them that they provide as services for the clinic. 
+//***************************************************************************
+//Class:  Specialty (model object)  
+//Extends: BaseEntity
+//
+//Model (entity) object representing Specialties vet can possess in the PetClinic system.
+//Each Vet entity can in turn have a Set of 1+ Specialty objects defining what they provide. 
 //This class adheres to the rules of a JavaBean.
-// 
-// Initially implemented as a POJO (to store in a basic HashMap/other).
 //
-// Updated to a JPA entity object to be persisted into a database.  Therefore,  
-// will require mapping [@Entity, @Id, possibly @Table, @Column, etc.] which is  
-// what turns this POJO into a JPA entity.  Also Constructor as preferred injection 
-// method. Steps #1-4
+//Initially implemented as a POJO (to store in a basic HashMap/other).
 //
-// To be a true Java Bean, need setter/getter, default constructor, implement Serializable.
+//Updated to a JPA entity object to be persisted into a database.  Therefore,  
+//will require mapping [@Entity, @Id, possibly @Table, @Column, etc.] which is  
+//what turns this POJO into a JPA entity.  Also Constructor as preferred injection 
+//method. Steps #1-4
+//
+//To be a true Java Bean, need setter/getter, default constructor, implement Serializable.
 //*************************************************************************** 
 package guru.springframework5.sfw5bgpetclinic.model;
 
-import java.util.Set;
+//@Entity 		// #1 - Annotate with @Entity to identify as JPA entity for DB
+public class Specialty extends BaseEntity {
 
-//@Entity 		// #1 - Annotate with @Entity to identify as JPA entity for DB  
-public class Vet extends Person {
-
+	// -----------------------------------------------
+	// Attributes  
+	// -----------------------------------------------
 	/**
 	 * Identifier necessary for all serializable objects in order to 
 	 * uniquely identify the class during serialization (output) and 
@@ -32,13 +33,13 @@ public class Vet extends Person {
 	 * GMSData, the static final UID attribute is not and must be 
 	 * defined in each subclass. 
 	 */
-	private static final long serialVersionUID = 4158981079483919923L;
-
-	/**
-	 * Each vet can have associated with them one or more areas of focus.   
-	 */
-	private Set<Specialty> specialties;
+	private static final long serialVersionUID = -3949998086774305654L;
 	
+	/**
+	 * Description of Specialty.
+	 */
+	private String description;
+
 	// -----------------------------------------------
 	// Constructors  
 	// -----------------------------------------------
@@ -46,28 +47,38 @@ public class Vet extends Person {
 	/**
 	 * Default constructor (required of JPA entity objects)
 	 */
-	public Vet() {
+	public Specialty() {
 		super();
+		this.description = null;
 	}
+
+	/** 
+	 * Constructor   
+	 * 
+	 * Used for constructor injection.  
+	 * 
+	 * If "id" were a member, do NOT include "id" as parameter.  
+	 * It would be a generated value that Hibernate will inject with setter.
+     */	 
+	public Specialty (String description) {
+		super();
+		this.description = description;
+	}  
 
 	// -----------------------------------------------
 	// Getters / Setters
 	// Used by Spring JPA / Hibernate to do Dependency Injection (DI)
-	// if doing setter injection - though constructor injection preferred
-	//
-	// Validation is done within validate(), not in setters to adhere to 
-	// JavaBean restrictions (expect setters that return void and cannot 
-	// throw exceptions.  
+	// if doing setter injection - though constructor injection preferred 
 	// -----------------------------------------------
 
-	public Set<Specialty> getSpecialties() {
-		return specialties;
+	public String getDescription() {
+		return description;
 	}
-	
-	public void setSpecialties(Set<Specialty> specialties) {
-		this.specialties = specialties;
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
-	
+
 	// -----------------------------------------------
 	// #5 Methods that override Java default functionality.
 	//    Required for JPA / Hibernate and by Sets. 
@@ -88,6 +99,7 @@ public class Vet extends Person {
 	 * 
 	 * @return boolean true if logically equal; false otherwise. 
 	 */
+	@Override
 	public boolean equals (Object o)
 	{
 		// Check if both object reference variables reference the same object in memory.
@@ -97,21 +109,41 @@ public class Vet extends Person {
 		if (o == null)
 			return false;
 		
-		// Works even if "o" is a derived class of Vet. 
-		if ( !(o instanceof Vet) )
+		// Works even if "o" is a derived class of Pet. 
+		if ( !(o instanceof Specialty) )
 			return false;
 		
-		Vet vo = (Vet)o;
-		
-		// Validate instance variables managed by base class.  If not equal, return false.  
+		Specialty so = (Specialty)o;
+
+		// Determine if instance variables managed by base class are logically equal.  If not, return false.  
 		if (!(super.equals(o)))
 			return false;
-		
+
+		// Description 
+		if (this.description == null) 
+		{
+			// False if ONLY this.description is null.
+			if (so.description != null)
+				return false;
+		} 
+		else if (so.description == null)
+		{
+			// False if ONLY so.description is null. 
+			if (this.description != null)
+				return false;
+		} 
+		else 
+		{
+			// Both have non-null descriptions to compare!
+			if (!this.description.equals(so.description))
+				return false;
+		}
+
 		// We made it!!!  Objects are equal!!
 		return true;
-		
 	}  // end equals(Object)
 
+	
 	/**
 	 * Calculates the object's hash code.
 	 * 
@@ -128,6 +160,7 @@ public class Vet extends Person {
 	 *  
 	 * @return int hash code value 
 	 */
+	@Override
 	public int hashCode()
 	{
 		final int prime = 17;
@@ -137,27 +170,26 @@ public class Vet extends Person {
 		// Object (i.e., String) return 0 if null or call hashCode() on it.
 		// NOTE:  String.hashCode() returns the same int value for strings of the 
 		// same value (i.e., "one" and "one") though they are different actual String objects).
-		result = result * prime + ( (specialties == null) ? 0 : specialties.hashCode());
-
+		result = result * prime + ( (description == null) ? 0 : description.hashCode());
+		
 		return result;
 	}  // end hashCode()
 
 	/**
-	 * Provides a reader friendly, string representation of Owner object.   
+	 * Provides a reader friendly, string representation of PetType object.   
 	 * 
 	 * This method overrides the default functionality provided by the 
 	 * java.lang.Object.toString() method.  Useful for logging and/or 
 	 * debugging. 
 	 * 
-	 * @return String containing JSON style representation of Person object. 
+	 * @return String containing JSON style representation of Pet object. 
 	 */
 	@Override
 	public String toString() {
-		
-		return "Vet{" +
-				super.toString() +
-				"specialties=" + specialties + '\'' +
+		return "Specialty{" +
+               super.toString() + 
+	           "description=" + description + 
 			   "}";
 	}  // end toString()
 
-}  // end class Vet 
+}  // end class Specialty
