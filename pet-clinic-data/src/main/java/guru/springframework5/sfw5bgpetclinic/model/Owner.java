@@ -104,6 +104,8 @@ public class Owner extends Person {
 		if (!(super.equals(o)))
 			return false;
 		
+		// Ignore Pets for now!  Did this in Regis. 
+		
 		// We made it!!!  Objects are equal!!
 		return true;
 		
@@ -130,6 +132,12 @@ public class Owner extends Person {
 		final int prime = 17;
 		int result = super.hashCode();
 		
+		// In this algorithm, based on Joshua Bloch's blog, if an attribute is an 
+		// Object (i.e., String) return 0 if null or call hashCode() on it.
+		// NOTE:  String.hashCode() returns the same int value for strings of the 
+		// same value (i.e., "one" and "one") though they are different actual String objects).
+		result = result * prime + ( (pets == null) ? 0 : pets.hashCode());
+		
 		return result;
 	}  // end hashCode()
 
@@ -147,6 +155,7 @@ public class Owner extends Person {
 		
 		return "Owner{" +
 				super.toString() +
+				"pets=" + pets + '\'' +
 			   "}";
 	}  // end toString()
 
