@@ -33,6 +33,13 @@ public class Owner extends Person {
 	 */
 	private static final long serialVersionUID = -4063886627796020648L;
 
+
+	// Typically, I place these at Person level.  However, we are not managing HR here, so 
+	// Vet is a Person (with first and last name), but does not need address information.
+	private String 	address,
+					city,
+					telephone;
+	
 	private Set<Pet> pets;    // Owners can have 1 or more pets. 
 
 	// -----------------------------------------------
@@ -56,6 +63,30 @@ public class Owner extends Person {
 	// throw exceptions.  
 	// -----------------------------------------------
 
+	public String getAddress() {
+		return address;
+	}
+	
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	
+	public String getCity() {
+		return city;
+	}
+	
+	public void setCity(String city) {
+		this.city = city;
+	}
+	
+	public String getTelephone() {
+		return telephone;
+	}
+	
+	public void setTelephone(String telephone) {
+		this.telephone = telephone;
+	}
+	
 	public Set<Pet> getPets() {
 		return pets;
 	}
@@ -104,6 +135,66 @@ public class Owner extends Person {
 		if (!(super.equals(o)))
 			return false;
 		
+		// Address
+		if (this.address == null) 
+		{
+			// False if ONLY this.address is null.
+			if (owner.address != null)
+				return false;
+		} 
+		else if (owner.address == null)
+		{
+			// False if ONLY owner.address has null name.
+			if (this.address != null)
+				return false;
+		} 
+		else 
+		{
+			// Both have non-null addresses to compare!
+			if (!this.address.equals(owner.address))
+				return false;
+		}
+		
+		// City 
+		if (this.city == null) 
+		{
+			// False if ONLY this.city is null.
+			if (owner.city != null)
+				return false;
+		} 
+		else if (owner.city == null)
+		{
+			// False if ONLY owner.city has null name.
+			if (this.city != null)
+				return false;
+		} 
+		else 
+		{
+			// Both have non-null cities to compare!
+			if (!this.city.equals(owner.city))
+				return false;
+		}
+		
+		// Telephone 
+		if (this.telephone == null) 
+		{
+			// False if ONLY this.telephone is null.
+			if (owner.telephone != null)
+				return false;
+		} 
+		else if (owner.telephone == null)
+		{
+			// False if ONLY owner.telephone has null name.
+			if (this.telephone != null)
+				return false;
+		} 
+		else 
+		{
+			// Both have non-null telephones to compare!
+			if (!this.telephone.equals(owner.telephone))
+				return false;
+		}
+		
 		// Ignore Pets for now!  Did this in Regis. 
 		
 		// We made it!!!  Objects are equal!!
@@ -136,7 +227,9 @@ public class Owner extends Person {
 		// Object (i.e., String) return 0 if null or call hashCode() on it.
 		// NOTE:  String.hashCode() returns the same int value for strings of the 
 		// same value (i.e., "one" and "one") though they are different actual String objects).
-		result = result * prime + ( (pets == null) ? 0 : pets.hashCode());
+		result = result * prime + ( (address == null) ? 0 : address.hashCode());
+		result = result * prime + ( (city == null) ? 0 : city.hashCode());
+		result = result * prime + ( (telephone == null) ? 0 : telephone.hashCode());
 		
 		return result;
 	}  // end hashCode()
@@ -155,7 +248,9 @@ public class Owner extends Person {
 		
 		return "Owner{" +
 				super.toString() +
-				"pets=" + pets + '\'' +
+				"address=" + address + 
+				", city=" + city +
+				", telephone=" + telephone + '\'' +
 			   "}";
 	}  // end toString()
 
