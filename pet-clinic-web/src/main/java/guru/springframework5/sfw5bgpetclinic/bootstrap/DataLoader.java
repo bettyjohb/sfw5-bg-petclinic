@@ -16,10 +16,13 @@ package guru.springframework5.sfw5bgpetclinic.bootstrap;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import guru.springframework5.sfw5bgpetclinic.model.Owner;
+import guru.springframework5.sfw5bgpetclinic.model.PetType;
 import guru.springframework5.sfw5bgpetclinic.model.Vet;
 import guru.springframework5.sfw5bgpetclinic.services.OwnerService;
 import guru.springframework5.sfw5bgpetclinic.services.VetService;
+import guru.springframework5.sfw5bgpetclinic.services.PetTypeService;
 import guru.springframework5.sfw5bgpetclinic.services.map.OwnerServiceMapImpl;
+import guru.springframework5.sfw5bgpetclinic.services.map.PetTypeServiceMapImpl;
 import guru.springframework5.sfw5bgpetclinic.services.map.VetServiceMapImpl;
 
 @Component   // Make this a Spring bean loaded into Spring Context, therefore Spring sees CommandLineRunner and executes with run(). 
@@ -27,19 +30,29 @@ public class DataLoader implements CommandLineRunner {
 
 	// Reference to interface types
 	private final OwnerService ownerService;
-	private final VetService vetService;      
+	private final VetService vetService;
+	private final PetTypeService petTypeService;
 	
 	// Don't need @Autowired in Spring 5. 
 	// Since @Component, component scan will instantiate at startup thereby calling default constructor.
 	// Since only one IMPL (MapImpl), Spring finds it and injects it for you since the IMPLs are @Service. 
-	public DataLoader(OwnerService ownerService, VetService vetService) {
+	public DataLoader(OwnerService ownerService, VetService vetService, PetTypeService petTypeService) {
 		this.ownerService = ownerService;
 		this.vetService = vetService;
+		this.petTypeService = petTypeService;
 	}  // end Constructor
 	
 	@Override
 	public void run(String... args) throws Exception {
-		// Utilize existing services the implement the CRUD operations to initilze mock data.
+		// Utilize existing services the implement the CRUD operations to initialize mock data.
+		PetType dog = new PetType();
+		dog.setName("Dog");
+		PetType saveDogPetType = petTypeService.save(dog);
+
+		PetType cat = new PetType();
+		cat.setName("Cat");
+		PetType saveCatPetType = petTypeService.save(cat);
+
 		Owner owner1 = new Owner();
 		owner1.setFirstName("Michael");
 		owner1.setLastName("Weston");
