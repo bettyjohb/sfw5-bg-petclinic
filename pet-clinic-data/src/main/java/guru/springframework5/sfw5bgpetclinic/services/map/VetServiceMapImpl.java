@@ -17,7 +17,7 @@
 //Stereotype:   @Service    Component Scan will pick up and instantiate to keep in Spring Context as Spring Bean.
 //                          By default, Singleton scope (only 1 instance ever).  Okay - services don't have state.
 //
-//VetServiceMapImpl is not the type referenced by using classes.  Reference OrderService.   
+//VetServiceMapImpl is not the type referenced by using classes.  Reference VetService.   
 //Storage is in HashMap managed in BaseServiceMapImpl (that is our method of persistence).
 //Methods here are defined with actual types <Vet, Long>, but mostly call up [super.somemethod()]
 //***************************************************************************
@@ -28,13 +28,13 @@
 //
 //  Interface: 
 //      BaseService     [common method signatures for all entities]
-//      <entity>Service [i.e., OrderService = = BaseService + Order specific methods]
+//      <entity>Service [i.e., VetService = = BaseService + Vet specific methods]
 //  
 //	  Classes:
 //       AbstractMapService [Not referenced by any class.  Has common methods implemented.] 
-//       OrderServiceMapImpl extends AbstractMapService and implements OrderService.
+//       VetServiceMapImpl extends AbstractMapService and implements VetService.
 //
-//  Controllers have reference of entity specific service (OrderService).  
+//  Controllers have reference of entity specific service (VetService).  
 //  This will be an IMPL determined at runtime by @Profile and application.properties. 
 //***************************************************************************
 package guru.springframework5.sfw5bgpetclinic.services.map;
@@ -45,9 +45,22 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 import guru.springframework5.sfw5bgpetclinic.model.Vet;
 import guru.springframework5.sfw5bgpetclinic.services.VetService;
+import guru.springframework5.sfw5bgpetclinic.services.SpecialtyService;
 
 @Service
 public class VetServiceMapImpl extends AbstractMapService<Vet, Long> implements VetService {
+
+	// Used on save() to account for composition (need to save Specialties).  
+	// Hibernate impl won't need to do this since Hibernate handles this for us (id gen and saving composite objects).
+	private final SpecialtyService specialtyService;
+
+	// -------------------------------------------------------
+	// Constructor Injection - To initialize private final attributes above. 
+	// -------------------------------------------------------
+	public VetServiceMapImpl (SpecialtyService specialtyService)  {
+		super();
+		this.specialtyService = specialtyService;
+	}
 
 	// -------------------------------------------------------
 	// MUST SPECIFY PUBLIC ON THESE METHODS.  CLASS DEFAULTS TO PACKAGE-PRIVATE.  
@@ -73,7 +86,7 @@ public class VetServiceMapImpl extends AbstractMapService<Vet, Long> implements 
         }
         // Found nothing
         return null;
-	}
+	}  // end findByLastName 
 
 	// -------------------------------------------------------
 	// Implementation of BaseService (extended by VetService)
@@ -91,8 +104,33 @@ public class VetServiceMapImpl extends AbstractMapService<Vet, Long> implements 
 	 */
 	@Override
 	public Vet save(Vet vet) {
-		return super.save(vet);
-	}
+		// Vet is a composite object ("has a" set of Specialties).  Need to behave like JPA / Hibernate and make 
+		// sure when save the Vet, also save the Vet's Specialties.  This behavior is kept here because we don't  
+		// want it in the entity / object model so behaves normally when use Hibernate.  Only this 
+		// Map implementation needs to do this management of composite objects and also generating new object IDs.
+		// Note:  When save() any of our entity objects, AbstractMapService.save() actually generates the next ID if the object does not have one.  Therefore, 
+		// this method is only concerned with calling save for composite objects (not generating the id itself).  
+
+		if (vet != null) {
+			// If there are 1+ Specialties, save them in case there were changes.
+			// Otherwise, if no Specialties, just go on to save the Vet.
+			if (vet.getSpecialties() != null) {
+				vet.getSpecialties().forEach(specialty->{
+					// SpecialtyServiceMapImpl will take care of generating an ID for Specialty if new.
+					// If existing Specialty, will swap and return reference to this Specialty with updates.
+					specialtyService.save(specialty);
+				});
+			}  // end if
+			
+			// AbstractMapService level of VetServiceMapImpl owns HashMap of Vets and adds/updates Vet objects.
+			// Managed by ID.  If replaces, HashMap returns prior, so our Abstract class returns current Vet object.
+			return super.save(vet);  
+		} else {
+			// Vet was null.  Nothing saved. 
+			return null;
+		}
+		
+	}  // end save
 
 	/**
 	 * Returns all instances of the type. 
@@ -132,10 +170,3 @@ public class VetServiceMapImpl extends AbstractMapService<Vet, Long> implements 
 	}
 	
 }  // end class VetServiceMapImpl
-
-  
-
-
-
-
-

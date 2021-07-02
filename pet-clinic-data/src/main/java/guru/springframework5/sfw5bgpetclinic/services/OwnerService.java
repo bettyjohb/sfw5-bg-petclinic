@@ -22,18 +22,18 @@
 //***************************************************************************
 //*** SEE BASESERVICE.JAVA FOR FULL EXPLANATION FOR WHY WE HAVE:
 //***************************************************************************
-//Why OrderServiceMapIMpl class extends AbstractMapService class .... and 
+//Why OwnerServiceMapIMpl class extends AbstractMapService class .... and 
 //    OwnerService interface implements BaseService interface 
 //
 //    Interface: 
 //        BaseService     [common method signatures for all entities]
-//        <entity>Service [i.e., OrderService = = BaseService + Order specific methods]
+//        <entity>Service [i.e., OwnerService = = BaseService + Owner specific methods]
 //    
 //	  Classes:
 //         AbstractMapService [Not referenced by any class.  Has common methods implemented.] 
-//         OrderServiceMapImpl extends AbstractMapService and implements OrderService.
+//         OwnerServiceMapImpl extends AbstractMapService and implements OwnerService.
 //
-//    Controllers have reference of entity specific service (OrderService).  
+//    Controllers have reference of entity specific service (OwnerService).  
 //    This will be an IMPL determined at runtime by @Profile and application.properties. 
 //***************************************************************************
 package guru.springframework5.sfw5bgpetclinic.services;

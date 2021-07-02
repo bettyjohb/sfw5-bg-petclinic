@@ -17,7 +17,7 @@
 //Stereotype:   @Service    Component Scan will pick up and instantiate to keep in Spring Context as Spring Bean.
 //                            By default, Singleton scope (only 1 instance ever).  Okay - services don't have state.
 //
-// OwnerServiceMapImpl is not the type referenced by using classes.  Reference OrderService.   
+// OwnerServiceMapImpl is not the type referenced by using classes.  Reference OwnerService.   
 // Storage is in HashMap managed in BaseServiceMapImpl (that is our method of persistence).
 // Methods here are defined with actual types <Owner, Long>, but mostly call up [super.somemethod()]
 //***************************************************************************
@@ -28,13 +28,13 @@
 //
 //    Interface: 
 //        BaseService     [common method signatures for all entities]
-//        <entity>Service [i.e., OrderService = = BaseService + Order specific methods]
+//        <entity>Service [i.e., OwnerService = = BaseService + Owner specific methods]
 //    
 //	  Classes:
 //         AbstractMapService [Not referenced by any class.  Has common methods implemented.] 
-//         OrderServiceMapImpl extends AbstractMapService and implements OrderService.
+//         OwnerServiceMapImpl extends AbstractMapService and implements OwnerService.
 //
-//    Controllers have reference of entity specific service (OrderService).  
+//    Controllers have reference of entity specific service (OwnerService).  
 //    This will be an IMPL determined at runtime by @Profile and application.properties. 
 //***************************************************************************
 package guru.springframework5.sfw5bgpetclinic.services.map;
@@ -71,8 +71,8 @@ public class OwnerServiceMapImpl extends AbstractMapService<Owner, Long> impleme
 	// -------------------------------------------------------
 
 	// -------------------------------------------------------
-	// Implementation of OrderService 
-	// This is not in AbstractMapService/BaseService, it is in VetService.
+	// Implementation of OwnerService 
+	// This is not in AbstractMapService/BaseService, it is in OwnerService.
 	// Therefore, unlike overriding BaseService methods <T, ID>,
 	// that just call super.someMethod, we implement it here
 	// since its a VetService interface w/o an implementation. 
@@ -91,7 +91,7 @@ public class OwnerServiceMapImpl extends AbstractMapService<Owner, Long> impleme
     }
     
 	// -------------------------------------------------------
-	// Implementation of BaseService (extended by OrderService)
+	// Implementation of BaseService (extended by OwnerService)
 	// -------------------------------------------------------
     // AbstractMapService provided generic implementation of BaseService.
     // Now override those AbstractMapService methods with specific <Vet, Long> types.

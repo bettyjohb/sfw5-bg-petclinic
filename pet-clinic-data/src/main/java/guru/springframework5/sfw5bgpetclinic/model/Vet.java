@@ -19,7 +19,7 @@ package guru.springframework5.sfw5bgpetclinic.model;
 
 import java.util.HashSet;
 import java.util.Set;
-
+ 
 //@Entity 		// #1 - Annotate with @Entity to identify as JPA entity for DB  
 public class Vet extends Person {
 
@@ -71,6 +71,24 @@ public class Vet extends Person {
 		this.specialties = specialties;
 	}
 	
+	// -----------------------------------------------
+	// Public Methods
+	// -----------------------------------------------
+
+	/**
+	 * Add a specialty to the vet's set of specialties.  
+	 * @param Specialty - Specialty to be added.  Can have null id if not saved yet. 
+	 * @return true if added; false otherwise. 
+	 */
+	public boolean add(Specialty specialty) {
+		if (specialty == null)
+			return false;
+		
+		// Request to add the Specialty.  If the specialty already exists in the Set (equals() returns true)
+		// specialty will not be added (returns false).  
+		return this.specialties.add(specialty);
+	}
+
 	// -----------------------------------------------
 	// #5 Methods that override Java default functionality.
 	//    Required for JPA / Hibernate and by Sets. 
