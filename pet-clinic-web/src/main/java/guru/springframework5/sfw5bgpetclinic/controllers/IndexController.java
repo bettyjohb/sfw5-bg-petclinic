@@ -35,5 +35,17 @@ public class IndexController {
 	@RequestMapping({"", "/","index","index.html"})	 
 	public String index() {
 		return ("index");       // Spring looks in src/main/resources in templates by default for index.html
-	}
+	}  // end index()
+	
+	// #3 - Tell Spring this is a Controller method to handle additional HTTP requests.
+	//      Specifically, this method handles if user ends URL with "oups" 
+	//      If you run the app will see RequestMappingHandlerMapping list this as handled.
+	//      - For now, return core name of Thymneleaf template "notImplemented.html"  
+    @RequestMapping({"/oups"})  
+	public String oupsHandler() {
+		  
+	  	return "notImplemented";  // Spring looks in templates notImplemented.html since Thymeleaf. 
+	  	                          // If JSP, ViewResolver would provide pre/suffix to build full jsp file/path. 
+	 }  // end oupsHandler
+
 }  // end IndexController

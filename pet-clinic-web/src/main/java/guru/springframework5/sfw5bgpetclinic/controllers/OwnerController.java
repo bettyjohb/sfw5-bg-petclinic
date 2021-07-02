@@ -43,16 +43,29 @@ public class OwnerController {
 	
 	// #2 - Tell Spring this is a Controller method to handle HTTP requests.
 	//      Specifically, this method handles if user ends URL with /owners, /owners/index or /owners/index.html.
+	//      [Get /owners from class level RequestMapping above.]
 	//      If you run the app will see RequestMappingHandlerMapping list these 3 types handled.
 	//      - Request owners from service to add to Model.  
     //      - Returns core name of Thymeleaf template where owners will be displayed. 
-	  @RequestMapping({"", "/", "/index", "index.html"})   // Controller level RequestMapping looks for these in owners
+    @RequestMapping({"", "/", "/index", "index.html"})   // Controller level RequestMapping looks for these in owners
 	public String listOwners(Model model) {
 		  
 		// Add owners to the model for use in the view.
 		model.addAttribute ("owners", ownerService.findAll());
 	  	return "owners/index";  // Spring looks in templates in owners folder for index.html since Thymeleaf. 
 	  	                        // If JSP, ViewResolver would provide pre/suffix to build full jsp file/path. 
+	 }
+
+	// #3 - Tell Spring this is a Controller method to handle additional HTTP requests.
+	//      Specifically, this method handles if user ends URL with "owners/find" 
+    //      [Get /owners from class level RequestMapping above, "/find" from here.]
+	//      If you run the app will see RequestMappingHandlerMapping list this as handled.
+	//      - For now, return core name of Thymneleaf template "notImplemented.html"  
+    @RequestMapping({"/find"})   // Controller level RequestMapping looks for these in owners
+	public String findOwners() {
+		  
+	  	return "notImplemented";  // Spring looks in templates notImplemented.html since Thymeleaf. 
+	  	                          // If JSP, ViewResolver would provide pre/suffix to build full jsp file/path. 
 	 }
 
 }  // end class OwnerController

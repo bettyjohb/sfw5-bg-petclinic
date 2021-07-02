@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import guru.springframework5.sfw5bgpetclinic.model.Vet;
 import guru.springframework5.sfw5bgpetclinic.services.VetService;
 
-@Controller      // #1 - Tell Spring this is a Spring MVC Controller to be instantiated. 
+@Controller      // #1 - Tell Spring this is a Spring MVC Controller to be instantiated.
 public class VetController {
 
 	private final VetService vetService;   // Interface - So actual instance can be MAP, DB, etc. 
@@ -44,12 +44,13 @@ public class VetController {
 	}  // end constructor
 
 	// #2 - Tell Spring this is a Controller method to handle HTTP requests.
-	//      Specifically, this method handles if user ends URL with /vets, /vets/index or /vets/index.html.
-	//      If you run the app will see RequestMappingHandlerMapping list these 3 types handled.
+	//      Specifically, this handles if user ends URL with /vets, /vets/index, /vets/index.html, or /vets.html.
+	//      [There is no file vets.html, just giving that name in URL.  Still return vets/index for vets/index.html]]
+	//      If you run the app will see RequestMappingHandlerMapping list these 4 types handled.
 	//
 	//      - Request vets from service to add to Model.  
     //      - Returns core name of Thymeleaf template. 
-    @RequestMapping({"/vets", "/vets/index", "/vets/index.html"})
+    @RequestMapping({"/vets", "/vets/index", "/vets/index.html", "/vets.html"}) 
 	public String listVets(Model model) {
     	model.addAttribute("vets", vetService.findAll());
     	return "vets/index";  // Spring looks in templates in vets folder for index.html since Thymeleaf. 
