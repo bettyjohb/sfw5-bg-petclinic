@@ -47,9 +47,25 @@ import org.springframework.stereotype.Service;
 
 import guru.springframework5.sfw5bgpetclinic.model.Pet;
 import guru.springframework5.sfw5bgpetclinic.services.PetService;
+import guru.springframework5.sfw5bgpetclinic.services.PetTypeService;
 
 @Service
 public class PetServiceMapImpl extends AbstractMapService<Pet, Long> implements PetService {
+
+	// When saving a Pet, need to mimic JPA / Hibernate saving compound attributes.  
+	// Pets have a PetType that needs to be saved so must call save on the PetType
+	// service (and if new, id == null, AbstractMapService will generate an ID).
+	// Do this here and not in model so don't alter when run against real DB.  Just needed
+	// for HashMap. 
+	private final PetTypeService petTypeService;
+	
+	// -------------------------------------------------------
+	// Constructor Injection - To initialize private final attributes. 
+	// -------------------------------------------------------
+	public PetServiceMapImpl (PetTypeService petTypeService)  {
+		super();
+		this.petTypeService = petTypeService;
+	}
 
 	// -------------------------------------------------------
 	// MUST SPECIFY PUBLIC ON THESE METHODS.  CLASS DEFAULTS TO PACKAGE-PRIVATE.  
@@ -81,8 +97,32 @@ public class PetServiceMapImpl extends AbstractMapService<Pet, Long> implements 
 	 */
 	@Override
 	public Pet save(Pet pet) {
-		return super.save(pet);
-	}
+		// Pet is a composite object ("has a" PetType).  Need to behave like JPA / Hibernate and make 
+		// sure when save the Pet, also save the PetType.  This behavior is kept here because we don't  
+		// want it in the entity / object model so behaves normally when use Hibernate.  Only this 
+		// Map implementation needs to do this management of IDs.  Note:  When save() any of our entity objects, 
+		// AbstractMapService.save() actually generates the next ID if the object does not have one.  Therefore, 
+		// this method is only concerned with calling save for composite objects (not generating the id itself).  
+		if (pet != null) {
+			// If there is a PetType, save it.  Otherwise, exception.  
+			if (pet.getPetType() != null) {
+				// PetTypeServiceMapImpl will take care of generating an ID for PetType if new.
+				// If existing PetType, will swap and return reference to this Pet with updates (i.e., generated ID).
+				// Pet has a PetType, which PetServiceMapImpl will also take care of.
+				// - Store the updated object (through base save returns same ref I think since HashMap.put returns ref of old
+				//   so base class just returning object passed in).
+				pet.setPetType( petTypeService.save(pet.getPetType()) );  
+			} else {
+				throw new java.lang.RuntimeException("Pet must have a PetType.");
+			}
+			
+			return super.save(pet);
+		} else {
+			// Pet was null.  Nothing saved. 
+			return null;
+		}
+		
+	}  // end save
 
 	/**
 	 * Returns all instances of the type. 

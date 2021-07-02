@@ -47,10 +47,22 @@ import org.springframework.stereotype.Service;
 
 import guru.springframework5.sfw5bgpetclinic.model.Owner;
 import guru.springframework5.sfw5bgpetclinic.services.OwnerService;
+import guru.springframework5.sfw5bgpetclinic.services.PetService;
+import guru.springframework5.sfw5bgpetclinic.services.PetTypeService;
 
 @Service
 public class OwnerServiceMapImpl extends AbstractMapService<Owner, Long> implements OwnerService {
 
+	private final PetService petService;
+	
+	// -------------------------------------------------------
+	// Constructor Injection - To initialize private final attributes above. 
+	// -------------------------------------------------------
+	public OwnerServiceMapImpl (PetService petService)  {
+		super();
+		this.petService = petService;
+	}
+	
 	// -------------------------------------------------------
 	// MUST SPECIFY PUBLIC ON THESE METHODS.  CLASS DEFAULTS TO PACKAGE-PRIVATE.  
 	// INTERACES DEFAULT TO PUBLIC.  THEREFORE, BASESERVICE DECLARATIONS DEFAULT TO
@@ -94,8 +106,33 @@ public class OwnerServiceMapImpl extends AbstractMapService<Owner, Long> impleme
 	 */
 	@Override
 	public Owner save(Owner owner) {
-		return super.save(owner);
-	}
+		// Owner is a composite object ("has a" set of Pets).  Need to behave like JPA / Hibernate and make 
+		// sure when save the Owner, also save the Owner's Pets.  This behavior is kept here because we don't  
+		// want it in the entity / object model so behaves normally when use Hibernate.  Only this 
+		// Map implementation needs to do this management of composite objects and also generating new object IDs.
+		// Note:  When save() any of our entity objects, AbstractMapService.save() actually generates the next ID if the object does not have one.  Therefore, 
+		// this method is only concerned with calling save for composite objects (not generating the id itself).  
+
+		if (owner != null) {
+			// If there are 1+ Pets, save them in case there were changes.
+			// Otherwise, if not Pets, just go on to save the owner.
+			if (owner.getPets() != null) {
+				owner.getPets().forEach(pet->{
+					// PetServiceMapImpl will take care of generating an ID for Pet if new.
+					// If existing Pet, will swap and return reference to this Pet with updates.
+					// Pet has a PetType, which PetServiceMapImpl will also take care of.
+					petService.save(pet);
+				});
+			}  // end if
+			
+			// AbstractMapService level of OwnerServiceMapImpl owns HashMap of Owners and adds/updates Owner objects.
+			return super.save(owner);  
+		} else {
+			// Owner was null.  Nothing saved. 
+			return null;
+		}
+		
+	}  // end save
 
 	/**
 	 * Returns all instances of the type. 

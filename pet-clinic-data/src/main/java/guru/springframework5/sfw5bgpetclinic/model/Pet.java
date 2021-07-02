@@ -36,6 +36,7 @@ public class Pet extends BaseEntity {
 	 */
 	private static final long serialVersionUID = 1986885758403978000L;
 
+	private String name;
 	private PetType petType;
 	private Owner owner;
 	private LocalDate birthDate;
@@ -49,6 +50,7 @@ public class Pet extends BaseEntity {
 	 */
 	public Pet() {
 		super();
+		this.name = null; 
 		this.petType = null;
 		this.owner = null;
 		this.birthDate = null;
@@ -62,15 +64,18 @@ public class Pet extends BaseEntity {
 	 * Do NOT include "id" as parameter.  It is a generated value that 
 	 * Hibernate will inject with setter.
 	 *
+	 * @param name Name of pet
 	 * @param petType Pet type / breed 
 	 * @param owner Owner of pet
 	 * @param birthDate Pet data of birth
   */	 
-	public Pet (PetType petType, Owner owner, LocalDate birthDate) {
+	public Pet (String name, PetType petType, Owner owner, LocalDate birthDate) {
 		super();
+		this.name = name;
 		this.petType = petType;
-		this.owner = owner;
 		this.birthDate = birthDate;
+		if (owner != null) 
+			owner.add(this);
 	}  
 
 	// -----------------------------------------------
@@ -79,21 +84,34 @@ public class Pet extends BaseEntity {
 	// if doing setter injection - though constructor injection preferred 
 	// -----------------------------------------------
 
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public PetType getPetType() {
 		return petType;
 	}
+	
 	public void setPetType(PetType petType) {
 		this.petType = petType;
 	}
+	
 	public Owner getOwner() {
 		return owner;
 	}
+	
 	public void setOwner(Owner owner) {
 		this.owner = owner;
 	}
+	
 	public LocalDate getBirthDate() {
 		return birthDate;
 	}
+	
 	public void setBirthDate(LocalDate birthDate) {
 		this.birthDate = birthDate;
 	}
@@ -136,6 +154,26 @@ public class Pet extends BaseEntity {
 		// Validate instance variables managed by base class.  If not equal, return false.  
 		if (!(super.equals(o)))
 			return false;
+
+		// Name 
+		if (this.name == null) 
+		{
+			// False if ONLY this.name is null.
+			if (po.name != null)
+				return false;
+		} 
+		else if (po.name == null)
+		{
+			// False if ONLY po.name has null name.
+			if (this.name != null)
+				return false;
+		} 
+		else 
+		{
+			// Both have non-null names to compare!
+			if (!this.name.equals(po.name))
+				return false;
+		}
 
 		// PetType 
 		if (this.petType == null) 
@@ -228,6 +266,7 @@ public class Pet extends BaseEntity {
 		// Object (i.e., String) return 0 if null or call hashCode() on it.
 		// NOTE:  String.hashCode() returns the same int value for strings of the 
 		// same value (i.e., "one" and "one") though they are different actual String objects).
+		result = result * prime + ( (name == null) ? 0 : name.hashCode());
 		result = result * prime + ( (petType == null) ? 0 : petType.hashCode());
 		result = result * prime + ( (owner == null) ? 0 : owner.hashCode());
 		result = result * prime + ( (birthDate == null) ? 0 : birthDate.hashCode());
@@ -248,9 +287,11 @@ public class Pet extends BaseEntity {
 	public String toString() {
 		return "Pet{" +
 	           super.toString() + 
-	           "petType=" + petType + 
-			   ", owner=" + owner + '\'' +
-			   ", birthDate=" + birthDate + '\'' +
+	           "name=" + name +
+	           ", petType=" + petType + '\'' +  
+	           // Do not use owner.toString or recursive since owner has a Pet that in turn has them as Owner.  
+			   ", owner=" + ( (owner == null) ? "null" : owner.getFirstName() + " " + owner.getLastName() ) + '\'' +
+			   ", birthDate=" + ( (birthDate == null) ? "unspecified" : birthDate ) + '\'' +
 			   "}";
 	}  // end toString()
 

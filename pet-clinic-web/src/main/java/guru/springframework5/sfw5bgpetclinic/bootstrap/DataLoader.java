@@ -16,6 +16,7 @@ package guru.springframework5.sfw5bgpetclinic.bootstrap;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import guru.springframework5.sfw5bgpetclinic.model.Owner;
+import guru.springframework5.sfw5bgpetclinic.model.Pet;
 import guru.springframework5.sfw5bgpetclinic.model.PetType;
 import guru.springframework5.sfw5bgpetclinic.model.Vet;
 import guru.springframework5.sfw5bgpetclinic.services.OwnerService;
@@ -35,7 +36,9 @@ public class DataLoader implements CommandLineRunner {
 	
 	// Don't need @Autowired in Spring 5. 
 	// Since @Component, component scan will instantiate at startup thereby calling default constructor.
-	// Since only one IMPL (MapImpl), Spring finds it and injects it for you since the IMPLs are @Service. 
+	// Since only one IMPL (MapImpl), Spring finds it and injects it for you since the IMPLs are @Service.
+	// Default is that only one instance ever made, so all get reference to same <entity>Service, therefore,
+	// if MapImpl, will have same service with same HashMap containing all entities of a given type. 
 	public DataLoader(OwnerService ownerService, VetService vetService, PetTypeService petTypeService) {
 		this.ownerService = ownerService;
 		this.vetService = vetService;
@@ -45,34 +48,66 @@ public class DataLoader implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		// Utilize existing services the implement the CRUD operations to initialize mock data.
+
+		// When PetTypeService saves the PetType, will address that there is no "id" (BaseEntity) and will generate.
+		// This is done in AbstractMapService so as not to mess up model or regular services for JPA/Hibernate DB 
+		// that provided this by default. 
 		PetType dog = new PetType();
-		dog.setName("Dog");
+		dog.setName("DOG");
 		PetType saveDogPetType = petTypeService.save(dog);
 
 		PetType cat = new PetType();
-		cat.setName("Cat");
+		cat.setName("CAT");
 		PetType saveCatPetType = petTypeService.save(cat);
 
+		// UNDERSTANDING....
+		// When OwnerService saves Owner, will address calling PetServiceMapImpl to save all its Pets.
+		//(Recall AbstractMapService will generate IDs for new Pet entities.)  In turn, PetServiceMapImpl
+		// will invoke PetTypeServiceMapImpl to make sure that PetTypes are saved (which they were above 
+		// so it will have to do nothing).  
+		// NOTE:  THIS LOGIC W/ MANUALLY SAVING COMPOSITE OBJECTS AND ID GENERATION IS IN THE MAP SERVICE 
+		// IMPLs BECAUSE WE DO NOT WANT TO MUCK UP THE MODEL OBJECTS (ENTITIES) BY GENERATING ID'S ETC SO 
+		// THEY CAN BE USED BY JPA/HIBERNATE.
+		
+		// OWNER 1 
 		Owner owner1 = new Owner();
 		owner1.setFirstName("Michael");
 		owner1.setLastName("Weston");
+		owner1.setAddress("123 Brickerel");
+		owner1.setCity("Miami");
+		owner1.setTelephone("1231231234");
+
+		// Pet constructor will set Pet's owner to specified owner, and call add(Pet) passing itself. 
+		Pet pet1 = new Pet("Dog1Name", saveDogPetType, owner1, java.time.LocalDate.now());
+		Pet pet2 = new Pet("Cat1Name", saveCatPetType, owner1, java.time.LocalDate.now());
 		
 		ownerService.save(owner1);
-		
+
+		// OWNER 2 
 		Owner owner2 = new Owner();
 		owner2.setFirstName("Fionna");
 		owner2.setLastName("Glenanne");
+		owner2.setAddress("456 Brickerel");
+		owner2.setCity("Miami");
+		owner2.setTelephone("7897897890");
 		
+		Pet pet3 = new Pet("Dog2Name", saveDogPetType, owner2, java.time.LocalDate.now());
+		Pet pet4 = new Pet("Cat2Name", saveCatPetType, owner2, java.time.LocalDate.now());
+
 		ownerService.save(owner2);
 		
-		System.out.println("Loaded owners....");
+		System.out.println("Loaded owners and their pets....");
+		System.out.println("OWNER 1 = " + owner1);
+		System.out.println("\nOWNER 2 = " + owner2);
 		
+		// VET 1
 		Vet vet1 = new Vet();
 		vet1.setFirstName("Sam");
 		vet1.setLastName("Axe");
 		
 		vetService.save(vet1);
 		
+		// VET 2 
 		Vet vet2 = new Vet();
 		vet2.setFirstName("Jessie");
 		vet2.setLastName("Porter");

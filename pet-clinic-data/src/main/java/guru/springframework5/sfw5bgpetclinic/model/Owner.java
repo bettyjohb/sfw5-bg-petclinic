@@ -16,6 +16,7 @@
 // *************************************************************************** 
 package guru.springframework5.sfw5bgpetclinic.model;
 
+import java.util.HashSet;
 import java.util.Set;
 
 //@Entity 		// #1 - Annotate with @Entity to identify as JPA entity for DB  
@@ -40,7 +41,11 @@ public class Owner extends Person {
 					city,
 					telephone;
 	
-	private Set<Pet> pets;    // Owners can have 1 or more pets. 
+	private Set<Pet> pets = new HashSet<>();    // Owners can have 1 or more pets.
+	                                            // HashSet does not have duplicates.  Based on equals().
+	                             				// Can have null id's until save().  
+	                                            // Equals will allow compare two new pets with null ids.
+	                                            // Null id's considered equal, but then compare rest of vals.
 
 	// -----------------------------------------------
 	// Constructors  
@@ -95,6 +100,29 @@ public class Owner extends Person {
 		this.pets = pets;
 	}
 	
+	// -----------------------------------------------
+	// Public Methods
+	// -----------------------------------------------
+
+	/**
+	 * Add a pet to the owner's set of pets.  
+	 * @param pet - Pet to be added.  Can have null id if not saved yet. 
+	 * @return true if added; false otherwise. 
+	 */
+	public boolean add(Pet pet) {
+		if (pet == null)
+			return false;
+		
+		// Request to add the Pet.  If the pet already exists in the Set (equals() returns true)
+		// pet will not be added (returns false).  Otherwise, set the pet's owner attribute; return true.
+		if (this.pets.add(pet)) {
+			pet.setOwner(this);
+			return true;
+		}
+		
+		// Pet was not added to Owner. 
+		return false;
+	}
 	
 	// -----------------------------------------------
 	// #5 Methods that override Java default functionality.
@@ -248,9 +276,10 @@ public class Owner extends Person {
 		
 		return "Owner{" +
 				super.toString() +
-				"address=" + address + 
-				", city=" + city +
+				"address=" + address + '\'' +
+				", city=" + city + '\'' +
 				", telephone=" + telephone + '\'' +
+				", pets=" + pets + '\'' +
 			   "}";
 	}  // end toString()
 

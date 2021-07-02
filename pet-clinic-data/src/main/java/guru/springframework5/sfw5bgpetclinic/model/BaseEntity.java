@@ -165,7 +165,7 @@ public class BaseEntity implements Serializable {
 	public String toString() {
 		
 		return "BaseEntity{" +
-		       "id=" + id.toString() + 
+		       "id=" + ( (id != null) ? id.toString() : "null" ) + 
 			   "}";
 	}  // end toString()
 

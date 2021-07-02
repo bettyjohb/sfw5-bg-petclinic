@@ -17,6 +17,7 @@
 //*************************************************************************** 
 package guru.springframework5.sfw5bgpetclinic.model;
 
+import java.util.HashSet;
 import java.util.Set;
 
 //@Entity 		// #1 - Annotate with @Entity to identify as JPA entity for DB  
@@ -35,9 +36,11 @@ public class Vet extends Person {
 	private static final long serialVersionUID = 4158981079483919923L;
 
 	/**
-	 * Each vet can have associated with them one or more areas of focus.   
+	 * Each vet can have associated with them one or more areas of focus.
+	 * No duplicates allowed.  Based on equals().  Can add Specialties w/o id (before save).
+	 * Will determine two null id's equal and move on to determine remainder based on values.    
 	 */
-	private Set<Specialty> specialties;
+	private Set<Specialty> specialties = new HashSet<>();
 	
 	// -----------------------------------------------
 	// Constructors  
