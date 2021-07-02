@@ -18,10 +18,12 @@ import org.springframework.stereotype.Component;
 import guru.springframework5.sfw5bgpetclinic.model.Owner;
 import guru.springframework5.sfw5bgpetclinic.model.Pet;
 import guru.springframework5.sfw5bgpetclinic.model.PetType;
+import guru.springframework5.sfw5bgpetclinic.model.Specialty;
 import guru.springframework5.sfw5bgpetclinic.model.Vet;
 import guru.springframework5.sfw5bgpetclinic.services.OwnerService;
 import guru.springframework5.sfw5bgpetclinic.services.VetService;
 import guru.springframework5.sfw5bgpetclinic.services.PetTypeService;
+import guru.springframework5.sfw5bgpetclinic.services.SpecialtyService;
 import guru.springframework5.sfw5bgpetclinic.services.map.OwnerServiceMapImpl;
 import guru.springframework5.sfw5bgpetclinic.services.map.PetTypeServiceMapImpl;
 import guru.springframework5.sfw5bgpetclinic.services.map.VetServiceMapImpl;
@@ -33,22 +35,48 @@ public class DataLoader implements CommandLineRunner {
 	private final OwnerService ownerService;
 	private final VetService vetService;
 	private final PetTypeService petTypeService;
+	private final SpecialtyService specialtyService;
 	
 	// Don't need @Autowired in Spring 5. 
 	// Since @Component, component scan will instantiate at startup thereby calling default constructor.
 	// Since only one IMPL (MapImpl), Spring finds it and injects it for you since the IMPLs are @Service.
 	// Default is that only one instance ever made, so all get reference to same <entity>Service, therefore,
 	// if MapImpl, will have same service with same HashMap containing all entities of a given type. 
-	public DataLoader(OwnerService ownerService, VetService vetService, PetTypeService petTypeService) {
+	public DataLoader(OwnerService ownerService, VetService vetService, PetTypeService petTypeService, SpecialtyService specialtyService) {
 		this.ownerService = ownerService;
 		this.vetService = vetService;
 		this.petTypeService = petTypeService;
+		this.specialtyService = specialtyService;
 	}  // end Constructor
 	
 	@Override
 	public void run(String... args) throws Exception {
+		
+		// When running Map based version, not a problem.  Data dumped and reloaded with each run. 
+		// When running JPA / Hibernate, DB stays around so loadData would keep trying to add dups. 
+		// Quirky check, see if findAll returns anything.  If so, don't call.
+		if (ownerService.findAll().size() == 0)
+			loadData();
+	}  // end run()
+	
+	
+	// ------------------------------------------------------
+	// Private Worker Methods
+	// ------------------------------------------------------
+	
+	/** 
+	 * Load dummy data into system. 
+	 * Keep separate so can skip when using DB IMPLs and don't want to use this.  
+	 */
+	private void loadData() {
 		// Utilize existing services the implement the CRUD operations to initialize mock data.
 
+		// ----------------------------------------------
+		// Objects that are reused.
+		// 
+		// MUST save them here.  Don't rely on composite saving because reusing so need reference returned from save(). 
+		// ----------------------------------------------
+		
 		// When PetTypeService saves the PetType, will address that there is no "id" (BaseEntity) and will generate.
 		// This is done in AbstractMapService so as not to mess up model or regular services for JPA/Hibernate DB 
 		// that provided this by default. 
@@ -60,6 +88,19 @@ public class DataLoader implements CommandLineRunner {
 		cat.setName("CAT");
 		PetType saveCatPetType = petTypeService.save(cat);
 
+		Specialty radiology = new Specialty();
+		radiology.setDescription("Radiology");
+		radiology = specialtyService.save(radiology);
+		
+		Specialty surgery = new Specialty();
+		surgery.setDescription("Surgery");
+		surgery = specialtyService.save(surgery);
+		
+		Specialty dentistry = new Specialty();
+		dentistry.setDescription("Dentistry");
+		dentistry = specialtyService.save(dentistry);
+
+		// Create Dummy Data 
 		// UNDERSTANDING....
 		// When OwnerService saves Owner, will address calling PetServiceMapImpl to save all its Pets.
 		//(Recall AbstractMapService will generate IDs for new Pet entities.)  In turn, PetServiceMapImpl
@@ -104,17 +145,22 @@ public class DataLoader implements CommandLineRunner {
 		Vet vet1 = new Vet();
 		vet1.setFirstName("Sam");
 		vet1.setLastName("Axe");
-		
+		vet1.add(radiology);
+				
 		vetService.save(vet1);
 		
 		// VET 2 
 		Vet vet2 = new Vet();
 		vet2.setFirstName("Jessie");
 		vet2.setLastName("Porter");
+		vet2.add(dentistry);    
+		vet2.add(surgery);
 		
 		vetService.save(vet2);
 		
 		System.out.println("Loaded vets....");
-	}  // end run()
+		System.out.println("VET 1 (has 1 specialty) = " + vet1);
+		System.out.println("\nVET 2 (has 2 specialties) = " + vet2);		
+	}  // end loadData
 	
 }  // end DataLoader
