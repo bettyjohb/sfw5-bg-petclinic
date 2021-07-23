@@ -7,10 +7,10 @@
 //
 //Initially implemented as a POJO (to store in a basic HashMap/other).
 //
-//Updated to a JPA entity object to be persisted into a database.  Therefore,  
-//will require mapping [@Entity, @Id, possibly @Table, @Column, etc.] which is  
-//what turns this POJO into a JPA entity.  Also Constructor as preferred injection 
-//method. Steps #1-4
+// Updated to a JPA entity object to be persisted into a database.  Therefore,  
+// will require mapping [@Entity, possibly @Table, @Column, etc.] which is  
+// what turns this POJO into a JPA entity.  @Id is in BaseEntity.  Also, 
+// Constructor is preferred injection method. 
 //
 //To be a true Java Bean, need setter/getter, default constructor, implement Serializable.
 //*************************************************************************** 
@@ -18,7 +18,14 @@ package guru.springframework5.sfw5bgpetclinic.model;
 
 import java.time.LocalDate;
 
-//@Entity 		// #1 - Annotate with @Entity to identify as JPA entity for DB  
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity 		// Identify as JPA entity for DB  
+@Table(name = "pets")
 public class Pet extends BaseEntity {
 
 	// -----------------------------------------------
@@ -36,9 +43,26 @@ public class Pet extends BaseEntity {
 	 */
 	private static final long serialVersionUID = 1986885758403978000L;
 
+	@Column(name = "name")
 	private String name;
+	
+	// PetType attribute
+	// 		1 PetType has MANY Pet a/w it in table.  (PetType has NO Hash<Pet> attrib; but logically PetType has lots of Pet of its type)
+	//      Many Pet ref same 1 PetType in table.    (Pet has single PetType attribute)
+	// Therefore, Many Pet / One PetType; This is Pet class, so ManyToOne; In PetType class OneToMany
+	@ManyToOne						   // Tells JPA join based on pet_type_id
+	@JoinColumn(name = "pet_type_id")  
 	private PetType petType;
-	private Owner owner;
+	
+	// Owner attribute
+	// 		1 Owner has MANY Pet a/w it in table.  		(Owner has Hash<Pet> attribute)
+	//      Many Pet can have ref same 1 Owner in table.	(Pet has single Owner attribute)
+	// Therefore, Many Pet / One Owner; This is Pet class, so ManyToOne; In Owner class OneToMany
+	@ManyToOne
+	@JoinColumn(name = "owner_id")    // Tells JPA join based on Owner id.  
+	private Owner owner; 			  // Recall Owner's Hash<Pet> is @OneToMany, "mappedBy" this "owner" attrib (foreign key)
+	
+	@Column(name = "birth_date")
 	private LocalDate birthDate;
 	
 	// -----------------------------------------------

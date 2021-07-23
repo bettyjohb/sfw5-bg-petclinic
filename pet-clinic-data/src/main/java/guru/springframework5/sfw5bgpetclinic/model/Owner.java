@@ -8,9 +8,9 @@
 // Initially implemented as a POJO (to store in a basic HashMap/other).
 //
 // Updated to a JPA entity object to be persisted into a database.  Therefore,  
-// will require mapping [@Entity, @Id, possibly @Table, @Column, etc.] which is  
-// what turns this POJO into a JPA entity.  Also Constructor as preferred injection 
-// method. Steps #1-4
+// will require mapping [@Entity, possibly @Table, @Column, etc.] which is  
+// what turns this POJO into a JPA entity.  @Id is in BaseEntity.  Also, 
+// Constructor is preferred injection method. 
 //
 // To be a true Java Bean, need setter/getter, default constructor, implement Serializable.
 // *************************************************************************** 
@@ -19,7 +19,14 @@ package guru.springframework5.sfw5bgpetclinic.model;
 import java.util.HashSet;
 import java.util.Set;
 
-//@Entity 		// #1 - Annotate with @Entity to identify as JPA entity for DB  
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+@Entity 		            // Identify as JPA entity to be mapped to DB
+@Table(name = "owners")     // DB name to hold these objects
 public class Owner extends Person {
 
 	/**
@@ -37,13 +44,24 @@ public class Owner extends Person {
 
 	// Typically, I place these at Person level.  However, we are not managing HR here, so 
 	// Vet is a Person (with first and last name), but does not need address information.
-	private String 	address,
-					city,
-					telephone;
 	
-	private Set<Pet> pets = new HashSet<>();    // Owners can have 1 or more pets.
-	                                            // HashSet does not have duplicates.  Based on equals().
-	                             				// Can have null id's until save().  
+	@Column (name = "address")
+	private String 	address;
+
+	@Column (name = "city")
+	private String 	city;
+	
+	@Column (name = "telephone")
+	private String 	telephone;
+	
+	// pets attribute - requires a relationship mapping EVERY OWNER CAN HAVE MULTIPLE PETS; MANY PETS HAVE ONE OWNER
+	// 		1 Owner has MANY Pet a/w it in table.  			(Owner has Hash<Pet> attribute)
+	//      Many Pet can ref same 1 Owner in table.	        (Pet has single Owner attribute)
+	// Therefore, Many Pet / One Owner; This is Owner class, so OneToMany; In Pet class ManyToOne
+	@OneToMany (cascade = CascadeType.ALL, mappedBy = "owner")	// CascadeType ALL = if delete owner, delete their pets
+																// mappedBy = says "owner" (attrib of Pet) is foreign key to get Pet back to Owner.
+	 															// In turn, Pet will specify @ManyToOne and @JoinColumn as owner_id
+	private Set<Pet> pets = new HashSet<>();    // HashSet does not have duplicates.  Based on equals().  Can have null id's until save().  
 	                                            // Equals will allow compare two new pets with null ids.
 	                                            // Null id's considered equal, but then compare rest of vals.
 

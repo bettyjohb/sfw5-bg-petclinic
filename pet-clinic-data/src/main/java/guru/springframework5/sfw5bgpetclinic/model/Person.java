@@ -9,15 +9,19 @@
 // Initially implemented as a POJO (to store in a basic HashMap/other).
 //
 // Updated to a JPA entity object to be persisted into a database.  Therefore,  
-// will require mapping [@Entity, @Id, possibly @Table, @Column, etc.] which is  
-// what turns this POJO into a JPA entity.  Also Constructor as preferred injection 
-// method. Steps #1-4
+// will require mapping [@MappedSuperclass, @Column, etc.] which is  
+// what turns this POJO into a JPA entity.  @Id is in BaseEntity.  Even though 
+// MappedSuperclass won't create a table, put column names to use for the derived
+// classes that get the attribute. Also, Constructor is preferred injection method. 
 //
 // To be a true Java Bean, need setter/getter, default constructor, implement Serializable.
 // *************************************************************************** 
 package guru.springframework5.sfw5bgpetclinic.model;
 
-// @Entity 		// #1 - Annotate with @Entity to identify as JPA entity for DB  
+import javax.persistence.Column;
+import javax.persistence.MappedSuperclass;
+
+@MappedSuperclass 		  
 public class Person extends BaseEntity {
 	
 	// -----------------------------------------------
@@ -35,8 +39,11 @@ public class Person extends BaseEntity {
 	 */
 	private static final long serialVersionUID = 223761832424562593L;
 
-	private String firstName,
-	               lastName;
+	@Column(name = "first_name")	// By default, Hibernate makes camel case into _<lowercase>, so redundant but demos @Column
+	private String 	firstName;
+	
+	@Column(name = "last_name")
+	private String lastName;
 
 	// -----------------------------------------------
 	// Constructors  
