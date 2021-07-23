@@ -1,6 +1,9 @@
 //***************************************************************************
 //Class:    BaseEntity 	
 //Implements:  Serializable (as part of JavaBean / persisting in DB with Hibernate)
+//Annotation:  @MappedSuperclass tells JPA provider to include BaseEntity properties 
+//             as if in derived class (i.e., Vet will have Long id in its DB table;
+//             There will not be a BaseEntity Table with just an ID).
 //
 //Single abstract base model (entity) class from which all entity objects 
 //are derived, either directly or indirectly through levels of inheritance. 
@@ -10,19 +13,32 @@
 //      only know about BaseEntity objects (not each derived entity).  
 //    - Extended by all entity objects persisted to a DB (or even a "key"
 //      based collection).  The Id attribute offers a unique identifier to 
-//      be used as a primary key. [Can't do it only at base level or same for all 
-//      and it relates to identifying a particular object type.] 
+//      be used as a primary key.  
+//      [To work with JPA Data / Hibernate, include annotations to map objects
+//       to DB.  When doing HashMap, ignore and must provide manual generation 
+//       of ID in a Map Impl class (don't do in base classes shared by non-map
+//       implementations because will mess up autogeneration provided by DB.]
 // 
 //To be a true Java Bean
 //  - Implement Serializable (marker base interface w/o methods.  As part of 
 //    serializable, all derived class types that will be persisted will provide
-//    its own serialVersionUID. 
+//    its own serialVersionUID.  Can't do only at base level, or same for all.  
+//    It must be different since relates to identifying particular object type.
 //  - Have getters / setters 
 //  - Default constructor 
 //*************************************************************************** 
 package guru.springframework5.sfw5bgpetclinic.model;
 import java.io.Serializable;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
+
+@MappedSuperclass  // Tells the JPA provider to include the base class persistent properties as if 
+                   // they were declared by the child class extending.  Therefore, won't make a  
+                   // BaseEntity Table in DB with ID only.  Will instead add Long id to all classes 
+                   // that derive from BaseEntity and their table will have id. 
 public class BaseEntity implements Serializable {
 
 	/**
@@ -38,9 +54,8 @@ public class BaseEntity implements Serializable {
 	private static final long serialVersionUID = 6624281712368887444L;
 
 	// IF ADD ID, CHECK AUTHOR CLASS TO ADD ID BACK IN 
-	//@Id             // #2 - Annotate with @Id to identify as key for Author class
-	//@GeneratedValue(strategy = GenerationType.AUTO)  // #3 - DB will generate key 
-
+	@Id       	// Tells JPA this is the ID value (i.e., primary key) 
+	@GeneratedValue(strategy = GenerationType.IDENTITY)  // Or can be TABLE, SEQUENCE, AUTO
 	private Long id;    // Use Long (not primitive long) in case of Hibernate since can be null   
 
 	// -----------------------------------------------
