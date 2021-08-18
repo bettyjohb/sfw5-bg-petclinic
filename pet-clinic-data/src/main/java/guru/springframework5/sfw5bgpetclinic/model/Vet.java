@@ -19,8 +19,18 @@ package guru.springframework5.sfw5bgpetclinic.model;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinTable;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
  
-//@Entity 		// #1 - Annotate with @Entity to identify as JPA entity for DB  
+@Entity 		       // Identify as JPA entity for DB
+@Table(name = "vets")  // optional - Can use Hibernate default
 public class Vet extends Person {
 
 	/**
@@ -37,10 +47,16 @@ public class Vet extends Person {
 
 	/**
 	 * Each vet can have associated with them one or more areas of focus.
-	 * No duplicates allowed.  Based on equals().  Can add Specialties w/o id (before save).
-	 * Will determine two null id's equal and move on to determine remainder based on values.    
 	 */
-	private Set<Specialty> specialties = new HashSet<>();
+	// EVERY VET CAN HAVE MANY SPECIALTY TYPES; AND (BECAUSE ONLY 1 INSTANCE OF EACH SPECIALTY TYPE - like Constant), EACH SPECIALTY BELONG TO MANY VET 
+	// 		1 Vet has MANY Specialty a/w it in table.  		(Vet has Hash<Specialty> attribute)
+	//      "Single-instance" Specialty can be a/w Many Vet in table.	(BUT Specialty does not have a Vet attrib; just logically related back)
+	// Therefore, Many Specialty / Many Vet; This is Vet class, so MamyToMany
+	@ManyToMany (fetch = FetchType.EAGER)	// No cascade type; If delete Vet, don't delete the Specialty (shared by all of that specialty)
+	@JoinTable(name = "vet_specialties", joinColumns = @JoinColumn(name = "vet_id"), inverseJoinColumns = @JoinColumn(name = "specialty_id"))
+	private Set<Specialty> specialties = new HashSet<>();   // HashSet does not allow dups.  Based on equals().  Can have null id's till Save().
+															// Equals will allow compare two new specialties with null id. 
+															// Null id's considered equal, but then compare rest of vals. 
 	
 	// -----------------------------------------------
 	// Constructors  

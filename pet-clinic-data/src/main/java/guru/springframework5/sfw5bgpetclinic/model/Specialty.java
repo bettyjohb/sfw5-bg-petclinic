@@ -17,7 +17,12 @@
 //*************************************************************************** 
 package guru.springframework5.sfw5bgpetclinic.model;
 
-//@Entity 		// #1 - Annotate with @Entity to identify as JPA entity for DB
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity 		// @Entity to identify as JPA entity for DB
+@Table(name = "specialties")
 public class Specialty extends BaseEntity {
 
 	// -----------------------------------------------
@@ -38,6 +43,7 @@ public class Specialty extends BaseEntity {
 	/**
 	 * Description of Specialty.
 	 */
+	@Column(name = "description")
 	private String description;
 
 	// -----------------------------------------------
