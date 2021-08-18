@@ -17,11 +17,15 @@
 package guru.springframework5.sfw5bgpetclinic.model;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity 		// Identify as JPA entity for DB  
@@ -64,6 +68,9 @@ public class Pet extends BaseEntity {
 	
 	@Column(name = "birth_date")
 	private LocalDate birthDate;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "pet")     // 1 Pet / Many Visits (CascadeType.ALL = If delete Pet, delete its visits)   
+	private Set<Visit> visits = new HashSet<>();                //                     (mappedBy "pet" attribute of Visit class) 
 	
 	// -----------------------------------------------
 	// Constructors  
@@ -139,7 +146,39 @@ public class Pet extends BaseEntity {
 	public void setBirthDate(LocalDate birthDate) {
 		this.birthDate = birthDate;
 	}
+
+	public Set<Visit> getVisits() {
+		return visits;
+	}
 	
+	public void setVisits(Set<Visit> visits) {
+		this.visits = visits;
+	}
+
+	// -----------------------------------------------
+	// Public Methods
+	// -----------------------------------------------
+
+	/**
+	 * Add a visit to the pet's set of visits.  
+	 * @param visit - Visit to be added.  Can have null id if not saved yet. 
+	 * @return true if added; false otherwise. 
+	 */
+	public boolean add(Visit visit) {
+		if (visit == null)
+			return false;
+		
+		// Request to add the Visit.  If the visit already exists in the Set (equals() returns true)
+		// visit will not be added (returns false).  Otherwise, set the visit's pet attribute; return true.
+		if (this.visits.add(visit)) {
+			visit.setPet(this);
+			return true;
+		}
+		
+		// Visit was not added to Pet. 
+		return false;
+	}
+
 	// -----------------------------------------------
 	// #5 Methods that override Java default functionality.
 	//    Required for JPA / Hibernate and by Sets. 
@@ -259,6 +298,8 @@ public class Pet extends BaseEntity {
 				return false;
 		}
 
+		// Ignore Visits for now - as did at Regis. 
+				
 		// We made it!!!  Objects are equal!!
 		return true;
 		
@@ -316,6 +357,7 @@ public class Pet extends BaseEntity {
 	           // Do not use owner.toString or recursive since owner has a Pet that in turn has them as Owner.  
 			   ", owner=" + ( (owner == null) ? "null" : owner.getFirstName() + " " + owner.getLastName() ) + '\'' +
 			   ", birthDate=" + ( (birthDate == null) ? "unspecified" : birthDate ) + '\'' +
+			   ", visits=" + ( (visits == null) ? "none" : visits ) + '\'' +
 			   "}";
 	}  // end toString()
 

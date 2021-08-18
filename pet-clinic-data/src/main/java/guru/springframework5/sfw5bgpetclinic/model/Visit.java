@@ -19,7 +19,14 @@ package guru.springframework5.sfw5bgpetclinic.model;
 
 import java.time.LocalDate;
 
-//@Entity 		// #1 - Annotate with @Entity to identify as JPA entity for DB
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity 		// Identify as JPA entity for DB (gets a table)
+@Table(name = "visits")
 public class Visit extends BaseEntity {
 
 	// -----------------------------------------------
@@ -37,19 +44,20 @@ public class Visit extends BaseEntity {
 	 */
 	private static final long serialVersionUID = 7396511996642980652L;
 	
-	// @Column (name ="???")
-	// Date/time of visit - Set to the data Visit instance was created. 
+	// Date/time of visit - Set to the data Visit instance was created.
+	@Column (name ="date") 
 	private LocalDate date;
 
-	// @NotEmpty
-	// @Colunn (name = "???")
 	// Reason for visit.
+	@Column (name = "description")
 	private String description;
-	
-	// @Colunn (name = "???")
 
-	private Integer petId;
-	
+	// Set up mapping between Visit and Pet (Visit can have 1 pet; Pet can have many Visits (Pet has Set<Visit>)
+	// [NOTE:  If did Integer petId, could just use @Column(name="pet_Id") insteadd.] 
+	@ManyToOne                           // Many Visits can be a/w 1 Pet in DB
+	@JoinColumn(name = "pet_id")         // Tells Visit to join (find correct Pet a/w visit) based on Pet's Pet Id.    
+	private Pet pet;
+		
 	// -----------------------------------------------
 	// Constructors  
 	// -----------------------------------------------
@@ -69,17 +77,17 @@ public class Visit extends BaseEntity {
 	 * 
 	 * @param date Date Visit created/instantiated
 	 * @param description Description of visit
-	 * @param petId Id of pet being seen
+	 * @param pet Pet object being seen
 	 *  
 	 * @author Betty Jo Booth
 	 * @version 1.0
 	 * @since 1.0
 	 */
-	public Visit (LocalDate date, String description, Integer petId) {
+	public Visit (LocalDate date, String description, Pet pet) {
 		super();
 		this.date = date;
 		this.description = description;
-		this.petId = petId;
+		this.pet = pet;
 	}
 
 	// -----------------------------------------------
@@ -108,12 +116,12 @@ public class Visit extends BaseEntity {
 		this.description = description;
 	}
 	
-	public Integer getPetId() {
-		return petId;
+	public Pet getPet() {
+		return pet;
 	}
 	
-	public void setPetId(Integer petId) {
-		this.petId = petId;
+	public void setPet(Pet pet) {
+		this.pet = pet;
 	}
 	
 	// -----------------------------------------------
@@ -196,23 +204,23 @@ public class Visit extends BaseEntity {
 				return false;
 		}
 
-		// Pet Id 
-		if (this.petId == null) 
+		// Pet  
+		if (this.pet == null) 
 		{
-			// False if only this.petId has null petId.
-			if (vo.petId != null)
+			// False if only this.pet has null pet.
+			if (vo.pet != null)
 				return false;
 		} 
-		else if (vo.petId == null)
+		else if (vo.pet == null)
 		{
-			// False if only vo.pedIt has null petId.
-			if (this.petId != null)
+			// False if only vo.ped has null pet.
+			if (this.pet != null)
 				return false;
 		} 
 		else 
 		{
-			// Both have non-null petId to compare!
-			if (!this.petId.equals(vo.petId))   // Compares if the values represented are the same. 
+			// Both have non-null pet to compare!
+			if (!this.pet.equals(vo.pet))   // Compares if the values represented are the same. 
 				return false;					 
 		}
 
@@ -250,7 +258,7 @@ public class Visit extends BaseEntity {
 		// same value (i.e., "one" and "one") though they are different actual String objects).
 		result = result * prime + ( (date == null) ? 0 : date.hashCode());
 		result = result * prime + ( (description == null) ? 0 : description.hashCode());
-		result = result * prime + ( (petId == null) ? 0 : petId.hashCode());
+		result = result * prime + ( (pet == null) ? 0 : pet.hashCode());
 	
 		return result;
 	}  // end hashCode()
@@ -269,7 +277,7 @@ public class Visit extends BaseEntity {
 		return "Visit{" +
 	           super.toString() +
 	           "date=" + date +
-	           ", petId=" + petId +
+	           ", pet=" + pet +
 			   ", description=" + description + '\'' + 
 			   "}";
 	}  // end toString()
