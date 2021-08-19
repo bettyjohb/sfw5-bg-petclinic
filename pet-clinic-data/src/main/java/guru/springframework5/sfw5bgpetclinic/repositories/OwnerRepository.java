@@ -14,6 +14,7 @@ import guru.springframework5.sfw5bgpetclinic.model.Owner;
 
 public interface OwnerRepository extends CrudRepository<Owner, Long> {     // Long is the id type in BaseEntity   
 
-	// At this point, no need for JPA Query methods with special find capabilities, etc.  Just stay with default CrudRepository. 
+	// Implement custom JPA Query methods (not provided by CrudRepository) with special find capabilities, etc. 
+	public Owner findByLastName(String lastName);
 	
 }  // end interface OwnerRepository
