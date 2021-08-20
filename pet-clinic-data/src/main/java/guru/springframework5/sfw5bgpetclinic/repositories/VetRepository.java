@@ -10,10 +10,12 @@
  */
 package guru.springframework5.sfw5bgpetclinic.repositories;
 import org.springframework.data.repository.CrudRepository;
+
 import guru.springframework5.sfw5bgpetclinic.model.Vet;
 
 public interface VetRepository extends CrudRepository<Vet, Long> {    // Long is the id type in BaseEntity
 
-	// At this point, no need for JPA Query methods with special find capabilities, etc.  Just stay with default CrudRepository.
+	// Implement custom JPA Query methods (not provided by CrudRepository) with special find capabilities, etc. 
+	public Vet findByLastName(String lastName);
 
 }  // end interface VetRepository 
