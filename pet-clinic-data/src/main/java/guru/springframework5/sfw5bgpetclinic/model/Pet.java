@@ -350,6 +350,13 @@ public class Pet extends BaseEntity {
 	 */
 	@Override
 	public String toString() {
+
+		// Build String of visit descriptions.  If use toString() will be recursive since Pet has Visits and Visit has a Pet. 
+		String strVisits = "";
+		visits.forEach(visit-> { 
+			strVisits.concat(visit.getDescription() + "\n");
+		});
+		
 		return "Pet{" +
 	           super.toString() + 
 	           "name=" + name +
@@ -357,7 +364,8 @@ public class Pet extends BaseEntity {
 	           // Do not use owner.toString or recursive since owner has a Pet that in turn has them as Owner.  
 			   ", owner=" + ( (owner == null) ? "null" : owner.getFirstName() + " " + owner.getLastName() ) + '\'' +
 			   ", birthDate=" + ( (birthDate == null) ? "unspecified" : birthDate ) + '\'' +
-			   ", visits=" + ( (visits == null) ? "none" : visits ) + '\'' +
+	           // Do not use visit.toString or recursive since visit has a Pet that in turn has them as Visit.
+			   ", visits=" + ( strVisits.isEmpty() ? "none" : strVisits) + '\'' +
 			   "}";
 	}  // end toString()
 

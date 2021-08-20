@@ -20,33 +20,34 @@ import guru.springframework5.sfw5bgpetclinic.model.Pet;
 import guru.springframework5.sfw5bgpetclinic.model.PetType;
 import guru.springframework5.sfw5bgpetclinic.model.Specialty;
 import guru.springframework5.sfw5bgpetclinic.model.Vet;
+import guru.springframework5.sfw5bgpetclinic.model.Visit;
 import guru.springframework5.sfw5bgpetclinic.services.OwnerService;
 import guru.springframework5.sfw5bgpetclinic.services.VetService;
 import guru.springframework5.sfw5bgpetclinic.services.PetTypeService;
 import guru.springframework5.sfw5bgpetclinic.services.SpecialtyService;
-import guru.springframework5.sfw5bgpetclinic.services.map.OwnerServiceMapImpl;
-import guru.springframework5.sfw5bgpetclinic.services.map.PetTypeServiceMapImpl;
-import guru.springframework5.sfw5bgpetclinic.services.map.VetServiceMapImpl;
+import guru.springframework5.sfw5bgpetclinic.services.VisitService;
 
 @Component   // Make this a Spring bean loaded into Spring Context, therefore Spring sees CommandLineRunner and executes with run(). 
 public class DataLoader implements CommandLineRunner {
 
-	// Reference to interface types
+	// Reference to interface types.  Impl can be MapImpl, SDJpaImpl, JdbcImpl, etc. 
 	private final OwnerService ownerService;
 	private final VetService vetService;
 	private final PetTypeService petTypeService;
 	private final SpecialtyService specialtyService;
+	private final VisitService visitService;
 	
 	// Don't need @Autowired in Spring 5. 
 	// Since @Component, component scan will instantiate at startup thereby calling default constructor.
 	// Since only one IMPL (MapImpl), Spring finds it and injects it for you since the IMPLs are @Service.
 	// Default is that only one instance ever made, so all get reference to same <entity>Service, therefore,
 	// if MapImpl, will have same service with same HashMap containing all entities of a given type. 
-	public DataLoader(OwnerService ownerService, VetService vetService, PetTypeService petTypeService, SpecialtyService specialtyService) {
+	public DataLoader(OwnerService ownerService, VetService vetService, PetTypeService petTypeService, SpecialtyService specialtyService, VisitService visitService) {
 		this.ownerService = ownerService;
 		this.vetService = vetService;
 		this.petTypeService = petTypeService;
 		this.specialtyService = specialtyService;
+		this.visitService = visitService;
 	}  // end Constructor
 	
 	@Override
@@ -137,10 +138,15 @@ public class DataLoader implements CommandLineRunner {
 
 		ownerService.save(owner2);
 		
+		Visit pet4Visit = new Visit();
+		pet4Visit.setDescription("Sneezy kitty cat.");
+		pet4Visit.setPet(pet4);
+		visitService.save(pet4Visit);
+		
 		System.out.println("Loaded owners and their pets....");
 		System.out.println("OWNER 1 = " + owner1);
 		System.out.println("\nOWNER 2 = " + owner2);
-		
+
 		// VET 1
 		Vet vet1 = new Vet();
 		vet1.setFirstName("Sam");

@@ -46,7 +46,6 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 
 import guru.springframework5.sfw5bgpetclinic.model.Visit;
-import guru.springframework5.sfw5bgpetclinic.services.PetService;
 import guru.springframework5.sfw5bgpetclinic.services.VisitService;
 
 // Recall, AbstractMapService 1) Provides HashMap acting as DB in Map Version.  (only one instant of). 
@@ -54,17 +53,11 @@ import guru.springframework5.sfw5bgpetclinic.services.VisitService;
 @Service
 public class VisitServiceMapImpl extends AbstractMapService<Visit, Long> implements VisitService {
 
-	// Keep so can save complex attribute Pet of Visit entity. 
-	// SDJpaImpl version would have Hibernate to do that automatically. 
-	// MapImpl must do manually. 
-	private final PetService petService;
-	
 	// -------------------------------------------------------
 	// Constructor Injection - To initialize private final attributes above. 
 	// -------------------------------------------------------
-	public VisitServiceMapImpl (PetService petService)  {
+	public VisitServiceMapImpl ()  {
 		super();
-		this.petService = petService;
 	}
 
 	/**
@@ -77,21 +70,21 @@ public class VisitServiceMapImpl extends AbstractMapService<Visit, Long> impleme
 	 */
 	@Override
 	public Visit save(Visit visit) {
-
 		// Compound Visit has complex Pet object as attribute.  
 		// Visits only save if the Pet is valid (existing).  Otherwise, throw exception.
 		// Not saving Pets here. 
 		// LocalDate and String description remain with the class (not complex).
 		if (visit != null)  {
+			Visit savedVisit = null;
 			if ( (visit.getPet() != null) && (visit.getPet().getId() != null) ) {
-				// Add the visit to the actual Pet in the HashMap
-				visit.setPet(petService.findById(visit.getPet().getId()));
+				savedVisit = super.save(visit);  // AbstractMapService will generate id.
+				// Add the visit to the Pet
 				visit.getPet().add(visit);
 			} else {
 				throw new java.lang.RuntimeException("Visit must have a valid Pet already in system.");
 			}
 			
-			return super.save(visit);  // AbstractMapService will generate id. 
+			return savedVisit; 
 		} else {
 			// Visit entity to be saved is null.
 			return null;
