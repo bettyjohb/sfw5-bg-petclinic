@@ -46,6 +46,7 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 
 import guru.springframework5.sfw5bgpetclinic.model.Owner;
+import guru.springframework5.sfw5bgpetclinic.model.Pet;
 import guru.springframework5.sfw5bgpetclinic.services.OwnerService;
 import guru.springframework5.sfw5bgpetclinic.services.PetService;
 import guru.springframework5.sfw5bgpetclinic.services.PetTypeService;
@@ -118,12 +119,15 @@ public class OwnerServiceMapImpl extends AbstractMapService<Owner, Long> impleme
 			// Otherwise, if not Pets, just go on to save the owner.
 			if (owner.getPets() != null) {
 				owner.getPets().forEach(pet->{
-					// PetServiceMapImpl will take care of generating an ID for Pet if new.
-					// If existing Pet, will swap and return reference to this Pet with updates.
-					// Pet has a PetType, which PetServiceMapImpl will also take care of.
-					petService.save(pet);
+					// If new Pet (no id), save it.  PetServiceMapImpl will generate ID and return 
+					// reference to object added to HashMap (which would be this object since new).  
+					// Pet has a PetType, which PetServiceMapImpl will verify was given or throw exception.
+					if (pet.getId() == null) {
+						Pet savedPet = petService.save(pet);
+						pet.setId(savedPet.getId());
+					}
 				});
-			}  // end if
+			}  // end if 1+ pets to save
 			
 			// AbstractMapService level of OwnerServiceMapImpl owns HashMap of Owners and adds/updates Owner objects.
 			return super.save(owner);  

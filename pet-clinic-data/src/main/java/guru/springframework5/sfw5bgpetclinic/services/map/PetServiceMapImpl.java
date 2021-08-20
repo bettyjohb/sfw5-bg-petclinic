@@ -48,6 +48,7 @@ import org.springframework.stereotype.Service;
 import guru.springframework5.sfw5bgpetclinic.model.Pet;
 import guru.springframework5.sfw5bgpetclinic.services.PetService;
 import guru.springframework5.sfw5bgpetclinic.services.PetTypeService;
+import guru.springframework5.sfw5bgpetclinic.services.VisitService;
 
 @Service
 public class PetServiceMapImpl extends AbstractMapService<Pet, Long> implements PetService {
@@ -58,13 +59,15 @@ public class PetServiceMapImpl extends AbstractMapService<Pet, Long> implements 
 	// Do this here and not in model so don't alter when run against real DB.  Just needed
 	// for HashMap. 
 	private final PetTypeService petTypeService;
+	private final VisitService visitService;
 	
 	// -------------------------------------------------------
 	// Constructor Injection - To initialize private final attributes. 
 	// -------------------------------------------------------
-	public PetServiceMapImpl (PetTypeService petTypeService)  {
+	public PetServiceMapImpl (PetTypeService petTypeService, VisitService visitService)  {
 		super();
 		this.petTypeService = petTypeService;
+		this.visitService = visitService;
 	}
 
 	// -------------------------------------------------------
@@ -106,12 +109,10 @@ public class PetServiceMapImpl extends AbstractMapService<Pet, Long> implements 
 		if (pet != null) {
 			// If there is a PetType, save it.  Otherwise, exception.  
 			if (pet.getPetType() != null) {
+				// If new PetType, save it. 
 				// PetTypeServiceMapImpl will take care of generating an ID for PetType if new.
-				// If existing PetType, will swap and return reference to this Pet with updates (i.e., generated ID).
-				// Pet has a PetType, which PetServiceMapImpl will also take care of.
-				// - Store the updated object (through base save returns same ref I think since HashMap.put returns ref of old
-				//   so base class just returning object passed in).
-				pet.setPetType( petTypeService.save(pet.getPetType()) );  
+				if (pet.getPetType().getId() == null)
+					pet.setPetType( petTypeService.save(pet.getPetType()) );  
 			} else {
 				throw new java.lang.RuntimeException("Pet must have a PetType.");
 			}
@@ -149,7 +150,15 @@ public class PetServiceMapImpl extends AbstractMapService<Pet, Long> implements 
 	 */
 	@Override
 	public void delete(Pet pet) {
-		super.delete(pet);
+		if (pet != null) {
+			// Remove all Visits for this Pet.  Done automatically if SD JPA / Hibernate.  
+			pet.getVisits().forEach(visit -> {
+				visitService.deleteById(visit.getId());
+			});
+			
+			// Now delete the Pet itself. 
+			super.delete(pet);
+		}
 	}
 
 	/**
@@ -158,7 +167,8 @@ public class PetServiceMapImpl extends AbstractMapService<Pet, Long> implements 
 	 */
 	@Override
 	public void deleteById(Long id) {
-		super.deleteById(id);
+		Pet pet = findById(id);
+		delete(pet);
 	}
 
 }  // end PetServiceMapImpl
