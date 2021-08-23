@@ -352,11 +352,16 @@ public class Pet extends BaseEntity {
 	public String toString() {
 
 		// Build String of visit descriptions.  If use toString() will be recursive since Pet has Visits and Visit has a Pet. 
+		int numVisits = visits.size();
+		int count = 1;
 		String strVisits = "";
-		visits.forEach(visit-> { 
-			strVisits.concat(visit.getDescription() + "\n");
-		});
-		
+		for (Visit visit : visits) {
+			if (count < numVisits)	
+				strVisits = strVisits.concat(visit.getDescription() + " | ");
+			else 
+				strVisits = strVisits.concat(visit.getDescription());
+		}
+
 		return "Pet{" +
 	           super.toString() + 
 	           "name=" + name +

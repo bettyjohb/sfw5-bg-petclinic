@@ -41,11 +41,14 @@
 package guru.springframework5.sfw5bgpetclinic.services.map;
 
 import java.util.Set;
+
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import guru.springframework5.sfw5bgpetclinic.model.Specialty;
 import guru.springframework5.sfw5bgpetclinic.services.SpecialtyService;
 
 @Service  // Must be a @Service to get picked up by Spring Context. 
+@Profile({"default", "map"})    // Use MapImpl's by default or if specify "map"; any other Profile do not instantiate MapImpl
 public class SpecialtyServiceMapImpl extends AbstractMapService<Specialty, Long> implements SpecialtyService {
 
 	// -------------------------------------------------------

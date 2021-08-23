@@ -81,7 +81,7 @@ public abstract class AbstractMapService<T extends BaseEntity, ID extends Long> 
 			if (object.getId() == null)  {   
 				object.setId(getNextId());  // No ID, so generate ID - creating new object
 			}
-			// If no object with that key yet, will add.  If existing key (id), will replace with new object.
+			// If no object with that key yet, will add.  If existing key (id), will replace with new object.  Returns ref to prev obj a/w key so ignore.
 			map.put(object.getId(), object);
 		} else {
 			throw new RuntimeException("Object cannot be null");

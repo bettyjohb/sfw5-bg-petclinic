@@ -42,12 +42,15 @@ package guru.springframework5.sfw5bgpetclinic.services.map;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import guru.springframework5.sfw5bgpetclinic.model.Vet;
 import guru.springframework5.sfw5bgpetclinic.services.VetService;
 import guru.springframework5.sfw5bgpetclinic.services.SpecialtyService;
 
 @Service
+@Profile({"default", "map"})    // Use MapImpl's by default or if specify "map"; any other Profile do not instantiate MapImpl
 public class VetServiceMapImpl extends AbstractMapService<Vet, Long> implements VetService {
 
 	// Used on save() to account for composition (need to save Specialties).  

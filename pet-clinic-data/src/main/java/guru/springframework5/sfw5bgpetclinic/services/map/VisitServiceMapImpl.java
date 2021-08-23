@@ -43,6 +43,7 @@ package guru.springframework5.sfw5bgpetclinic.services.map;
 
 import java.util.Set;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import guru.springframework5.sfw5bgpetclinic.model.Visit;
@@ -51,6 +52,7 @@ import guru.springframework5.sfw5bgpetclinic.services.VisitService;
 // Recall, AbstractMapService 1) Provides HashMap acting as DB in Map Version.  (only one instant of). 
 // 2) Provides generic implementation. 
 @Service
+@Profile({"default", "map"})    // Use MapImpl's by default or if specify "map"; any other Profile do not instantiate MapImpl
 public class VisitServiceMapImpl extends AbstractMapService<Visit, Long> implements VisitService {
 
 	// -------------------------------------------------------
@@ -78,8 +80,6 @@ public class VisitServiceMapImpl extends AbstractMapService<Visit, Long> impleme
 			Visit savedVisit = null;
 			if ( (visit.getPet() != null) && (visit.getPet().getId() != null) ) {
 				savedVisit = super.save(visit);  // AbstractMapService will generate id.
-				// Add the visit to the Pet
-				visit.getPet().add(visit);
 			} else {
 				throw new java.lang.RuntimeException("Visit must have a valid Pet already in system.");
 			}

@@ -39,12 +39,14 @@
 //***************************************************************************
 package guru.springframework5.sfw5bgpetclinic.services.map;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import java.util.Set;
 import guru.springframework5.sfw5bgpetclinic.model.PetType;
 import guru.springframework5.sfw5bgpetclinic.services.PetTypeService;
 
 @Service  // Must be a @Service to get picked up by Spring Container. 
+@Profile({"default", "map"})    // Use MapImpl's by default or if specify "map"; any other Profile do not instantiate MapImpl
 public class PetTypeServiceMapImpl extends AbstractMapService<PetType, Long> implements PetTypeService {
 
 	// -------------------------------------------------------

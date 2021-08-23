@@ -88,6 +88,7 @@ public class Visit extends BaseEntity {
 		this.date = date;
 		this.description = description;
 		this.pet = pet;
+		this.pet.add(this);
 	}
 
 	// -----------------------------------------------
@@ -122,6 +123,7 @@ public class Visit extends BaseEntity {
 	
 	public void setPet(Pet pet) {
 		this.pet = pet;
+		this.pet.add(this);
 	}
 	
 	// -----------------------------------------------

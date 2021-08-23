@@ -43,6 +43,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import guru.springframework5.sfw5bgpetclinic.model.Pet;
@@ -51,6 +52,7 @@ import guru.springframework5.sfw5bgpetclinic.services.PetTypeService;
 import guru.springframework5.sfw5bgpetclinic.services.VisitService;
 
 @Service
+@Profile({"default", "map"})    // Use MapImpl's by default or if specify "map"; any other Profile do not instantiate MapImpl
 public class PetServiceMapImpl extends AbstractMapService<Pet, Long> implements PetService {
 
 	// When saving a Pet, need to mimic JPA / Hibernate saving compound attributes.  

@@ -43,15 +43,16 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import guru.springframework5.sfw5bgpetclinic.model.Owner;
 import guru.springframework5.sfw5bgpetclinic.model.Pet;
 import guru.springframework5.sfw5bgpetclinic.services.OwnerService;
 import guru.springframework5.sfw5bgpetclinic.services.PetService;
-import guru.springframework5.sfw5bgpetclinic.services.PetTypeService;
 
 @Service
+@Profile({"default", "map"})    // Use MapImpl's by default or if specify "map"; any other Profile do not instantiate MapImpl
 public class OwnerServiceMapImpl extends AbstractMapService<Owner, Long> implements OwnerService {
 
 	private final PetService petService;
