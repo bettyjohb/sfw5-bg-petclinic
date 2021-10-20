@@ -24,7 +24,16 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+//@NoArgsConstructor   // Don't use Lombok - Custom gets current date / time    
+//@AllArgsConstructor  // Don't use Lombok - Sets bi-directional ref (Pet arg set to ref back to this visit)
+@Getter				 // Lombok
+@Setter              // Lombok - Override setPet since custom.
 @Entity 		// Identify as JPA entity for DB (gets a table)
 @Table(name = "visits")
 public class Visit extends BaseEntity {
@@ -92,6 +101,12 @@ public class Visit extends BaseEntity {
 	}
 
 	// -----------------------------------------------
+	// LOMBOK generates @Getters and @Setters
+	// 
+	// - Provide custom "setPet" to manually reference pet back to this Visit. 
+	// -----------------------------------------------
+
+	// -----------------------------------------------
 	// Getters / Setters   
 	// Used by Spring JPA / Hibernate to do Dependency Injection (DI)
 	// if doing setter injection - though constructor injection preferred
@@ -101,26 +116,26 @@ public class Visit extends BaseEntity {
 	// throw exceptions.  
 	// -----------------------------------------------
 	
-	public LocalDate getDate() {
-		return date;
-	}
-	
-	public void setDate(LocalDate date) {
-		this.date = date;
-	}
-	
-	public String getDescription() {
-		return description;
-	}
-	
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	
-	public Pet getPet() {
-		return pet;
-	}
-	
+//	public LocalDate getDate() {
+//		return date;
+//	}
+//	
+//	public void setDate(LocalDate date) {
+//		this.date = date;
+//	}
+//	
+//	public String getDescription() {
+//		return description;
+//	}
+//	
+//	public void setDescription(String description) {
+//		this.description = description;
+//	}
+//	
+//	public Pet getPet() {
+//		return pet;
+//	}
+//	
 	public void setPet(Pet pet) {
 		this.pet = pet;
 		this.pet.add(this);

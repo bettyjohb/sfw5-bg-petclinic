@@ -139,3 +139,5 @@ Desktop.ini
 # ESLint
 ######################
 .eslintcache
+/.apt_generated/
+/.apt_generated_tests/

@@ -24,8 +24,17 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Setter;
 
-@Entity 		            // Identify as JPA entity to be mapped to DB
+@AllArgsConstructor  // Lombok
+@NoArgsConstructor   // Lombok 
+@Getter				 // Lombok
+@Setter              // Lombok
+@Entity 		// Identify as JPA entity to be mapped to DB
 @Table(name = "owners")     // DB name to hold these objects
 public class Owner extends Person {
 
@@ -33,14 +42,13 @@ public class Owner extends Person {
 	 * Identifier necessary for all serializable objects in order to 
 	 * uniquely identify the class during serialization (output) and 
 	 * deserialization (input).  If the id at output does not match 
-	 * that at input, an exceptoin is thrown due to different class,
+	 * that at input, an exception is thrown due to different class,
 	 * 
 	 * Note:  ALthough the Serializable interface is inherited through 
 	 * GMSData, the static final UID attribute is not and must be 
 	 * defined in each subclass. 
 	 */
 	private static final long serialVersionUID = -4063886627796020648L;
-
 
 	// Typically, I place these at Person level.  However, we are not managing HR here, so 
 	// Vet is a Person (with first and last name), but does not need address information.
@@ -66,55 +74,23 @@ public class Owner extends Person {
 	                                            // Null id's considered equal, but then compare rest of vals.
 
 	// -----------------------------------------------
-	// Constructors  
+	// Constructors - LOMBOK generated @NoArgsConstructor
+	//                LOMBOK generated @AllArgsConstructor
 	// -----------------------------------------------
 
-	/**
-	 * Default constructor (required of JPA entity objects)
-	 */
-	public Owner() {
-		super();
-	}
+//	/**
+//	 * Default constructor (required of JPA entity objects)
+//	 */
+//	public Owner() {
+//		super();
+//	}
 
-	// -----------------------------------------------
-	// Getters / Setters
-	// Used by Spring JPA / Hibernate to do Dependency Injection (DI)
-	// if doing setter injection - though constructor injection preferred
-	//
-	// Validation is done within validate(), not in setters to adhere to 
-	// JavaBean restrictions (expect setters that return void and cannot 
-	// throw exceptions.  
-	// -----------------------------------------------
-
-	public String getAddress() {
-		return address;
-	}
-	
-	public void setAddress(String address) {
+	@Builder // ONLY PUT @BUILDER on CHILD class (not parent Person).  I don't pass ID - - generated. 
+	public Owner (String firstName, String lastName, String address, String city, String telephone, Set<Pet> pets) {
+		super(firstName, lastName);
 		this.address = address;
-	}
-	
-	public String getCity() {
-		return city;
-	}
-	
-	public void setCity(String city) {
 		this.city = city;
-	}
-	
-	public String getTelephone() {
-		return telephone;
-	}
-	
-	public void setTelephone(String telephone) {
 		this.telephone = telephone;
-	}
-	
-	public Set<Pet> getPets() {
-		return pets;
-	}
-	
-	public void setPets(Set<Pet> pets) {
 		this.pets = pets;
 	}
 	
@@ -141,6 +117,51 @@ public class Owner extends Person {
 		// Pet was not added to Owner. 
 		return false;
 	}
+
+// -----------------------------------------------
+// LOMBOK generates @Getters and @Setters 
+// -----------------------------------------------
+//	// -----------------------------------------------
+//	// Getters / Setters
+//	// Used by Spring JPA / Hibernate to do Dependency Injection (DI)
+//	// if doing setter injection - though constructor injection preferred
+//	//
+//	// Validation is done within validate(), not in setters to adhere to 
+//	// JavaBean restrictions (expect setters that return void and cannot 
+//	// throw exceptions.  
+//	// -----------------------------------------------
+//
+//	public String getAddress() {
+//		return address;
+//	}
+//	
+//	public void setAddress(String address) {
+//		this.address = address;
+//	}
+//	
+//	public String getCity() {
+//		return city;
+//	}
+//	
+//	public void setCity(String city) {
+//		this.city = city;
+//	}
+//	
+//	public String getTelephone() {
+//		return telephone;
+//	}
+//	
+//	public void setTelephone(String telephone) {
+//		this.telephone = telephone;
+//	}
+//	
+//	public Set<Pet> getPets() {
+//		return pets;
+//	}
+//	
+//	public void setPets(Set<Pet> pets) {
+//		this.pets = pets;
+//	}
 	
 	// -----------------------------------------------
 	// #5 Methods that override Java default functionality.
@@ -300,6 +321,5 @@ public class Owner extends Person {
 				", pets=" + pets + '\'' +
 			   "}";
 	}  // end toString()
-
 
 }  // end class Owner

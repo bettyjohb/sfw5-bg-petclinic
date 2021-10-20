@@ -20,7 +20,16 @@ package guru.springframework5.sfw5bgpetclinic.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@NoArgsConstructor   // Lombok 
+@AllArgsConstructor	 // Lombok
+@Getter				 // Lombok
+@Setter              // Lombok
 @Entity 		// @Entity to identify as JPA entity for DB
 @Table(name = "specialties")
 public class Specialty extends BaseEntity {
@@ -47,43 +56,48 @@ public class Specialty extends BaseEntity {
 	private String description;
 
 	// -----------------------------------------------
-	// Constructors  
+	// Constructors  - LOMBOK generated @NoArgsConstructor
+	//				   LOMBOK generated @AllArgsConstructor
 	// -----------------------------------------------
 
-	/**
-	 * Default constructor (required of JPA entity objects)
-	 */
-	public Specialty() {
-		super();
-		this.description = null;
-	}
+//	/**
+//	 * Default constructor (required of JPA entity objects) - Lombok generated @NoArgsConstructor
+//	 */
+//	public Specialty() {
+//		super();
+//		this.description = null;
+//	}
 
-	/** 
-	 * Constructor   
-	 * 
-	 * Used for constructor injection.  
-	 * 
-	 * If "id" were a member, do NOT include "id" as parameter.  
-	 * It would be a generated value that Hibernate will inject with setter.
-     */	 
-	public Specialty (String description) {
-		super();
-		this.description = description;
-	}  
+//	/** 
+//	 * Constructor - Lombok generated @AllArgsConstructor   
+//	 * 
+//	 * Used for constructor injection.  
+//	 * 
+//	 * If "id" were a member, do NOT include "id" as parameter.  
+//	 * It would be a generated value that Hibernate will inject with setter.
+//   */	 
+//	public Specialty (String description) {
+//		super();
+//		this.description = description;
+//	}  
 
-	// -----------------------------------------------
-	// Getters / Setters
-	// Used by Spring JPA / Hibernate to do Dependency Injection (DI)
-	// if doing setter injection - though constructor injection preferred 
-	// -----------------------------------------------
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
+// -----------------------------------------------
+// LOMBOK generates @Getters and @Setters 
+// -----------------------------------------------
+//
+//		// -----------------------------------------------
+//		// Getters / Setters
+//		// Used by Spring JPA / Hibernate to do Dependency Injection (DI)
+//		// if doing setter injection - though constructor injection preferred 
+//		// -----------------------------------------------
+//
+//	public String getDescription() {
+//		return description;
+//	}
+//
+//	public void setDescription(String description) {
+//		this.description = description;
+//	}
 
 	// -----------------------------------------------
 	// #5 Methods that override Java default functionality.

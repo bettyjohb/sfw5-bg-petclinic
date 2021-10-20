@@ -28,6 +28,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@NoArgsConstructor   // Lombok 
+@AllArgsConstructor	 // Lombok
+@Getter				 // Lombok
+@Setter              // Lombok
 @Entity 		// Identify as JPA entity for DB  
 @Table(name = "pets")
 public class Pet extends BaseEntity {
@@ -73,19 +83,21 @@ public class Pet extends BaseEntity {
 	private Set<Visit> visits = new HashSet<>();                //                     (mappedBy "pet" attribute of Visit class) 
 	
 	// -----------------------------------------------
-	// Constructors  
+	// Constructors - LOMBOK generated @NoArgsConstructor
+	//                LOMBOK generated @AllArgsConstructor
+	//                Uncommented constructor has 4 of the 5 attributes. 
 	// -----------------------------------------------
 
-	/**
-	 * Default constructor (required of JPA entity objects)
-	 */
-	public Pet() {
-		super();
-		this.name = null; 
-		this.petType = null;
-		this.owner = null;
-		this.birthDate = null;
-	}
+//	/**
+//	 * Default constructor (required of JPA entity objects)
+//	 */
+//	public Pet() {
+//		super();
+//		this.name = null; 
+//		this.petType = null;
+//		this.owner = null;
+//		this.birthDate = null;
+//	}
 
 	/** 
 	 * Constructor   
@@ -110,52 +122,6 @@ public class Pet extends BaseEntity {
 	}  
 
 	// -----------------------------------------------
-	// Getters / Setters
-	// Used by Spring JPA / Hibernate to do Dependency Injection (DI)
-	// if doing setter injection - though constructor injection preferred 
-	// -----------------------------------------------
-
-	public String getName() {
-		return name;
-	}
-	
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public PetType getPetType() {
-		return petType;
-	}
-	
-	public void setPetType(PetType petType) {
-		this.petType = petType;
-	}
-	
-	public Owner getOwner() {
-		return owner;
-	}
-	
-	public void setOwner(Owner owner) {
-		this.owner = owner;
-	}
-	
-	public LocalDate getBirthDate() {
-		return birthDate;
-	}
-	
-	public void setBirthDate(LocalDate birthDate) {
-		this.birthDate = birthDate;
-	}
-
-	public Set<Visit> getVisits() {
-		return visits;
-	}
-	
-	public void setVisits(Set<Visit> visits) {
-		this.visits = visits;
-	}
-
-	// -----------------------------------------------
 	// Public Methods
 	// -----------------------------------------------
 
@@ -178,6 +144,56 @@ public class Pet extends BaseEntity {
 		// Visit was not added to Pet. 
 		return false;
 	}
+	
+// -----------------------------------------------
+// LOMBOK generates @Getters and @Setters 
+// -----------------------------------------------
+//
+//	// -----------------------------------------------
+//	// Getters / Setters
+//	// Used by Spring JPA / Hibernate to do Dependency Injection (DI)
+//	// if doing setter injection - though constructor injection preferred 
+//	// -----------------------------------------------
+//
+//	public String getName() {
+//		return name;
+//	}
+//	
+//	public void setName(String name) {
+//		this.name = name;
+//	}
+//
+//	public PetType getPetType() {
+//		return petType;
+//	}
+//	
+//	public void setPetType(PetType petType) {
+//		this.petType = petType;
+//	}
+//	
+//	public Owner getOwner() {
+//		return owner;
+//	}
+//	
+//	public void setOwner(Owner owner) {
+//		this.owner = owner;
+//	}
+//	
+//	public LocalDate getBirthDate() {
+//		return birthDate;
+//	}
+//	
+//	public void setBirthDate(LocalDate birthDate) {
+//		this.birthDate = birthDate;
+//	}
+//
+//	public Set<Visit> getVisits() {
+//		return visits;
+//	}
+//	
+//	public void setVisits(Set<Visit> visits) {
+//		this.visits = visits;
+//	}
 
 	// -----------------------------------------------
 	// #5 Methods that override Java default functionality.

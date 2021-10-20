@@ -20,6 +20,16 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@NoArgsConstructor   // Lombok 
+@AllArgsConstructor	 // Lombok
+@Getter				 // Lombok
+@Setter              // Lombok
 @Entity 		// Identify as JPA entity for DB
 @Table(name = "pet_types")
 public class PetType extends BaseEntity {
@@ -43,43 +53,49 @@ public class PetType extends BaseEntity {
 	private String name;
 
 	// -----------------------------------------------
-	// Constructors  
+	// Constructors  - LOMBOK generated @NoArgsConstructor
+	//				   LOMBOK generated @AllArgsConstructor
 	// -----------------------------------------------
 
-	/**
-	 * Default constructor (required of JPA entity objects)
-	 */
-	public PetType() {
-		super();
-		this.name = null;
-	}
+//	/**
+//	 * Default constructor (required of JPA entity objects)
+//	 */
+//	public PetType() {
+//		super();
+//		this.name = null;
+//	}
+//
+//	/** 
+//	 * Constructor - Lombok generated @AllArgsConstructor  
+//	 * 
+//	 * Used for constructor injection.  
+//	 * 
+//	 * Do NOT include "id" as parameter.  It is a generated value that 
+//	 * Hibernate will inject with setter.
+//   */	 
+//	public PetType (String name) {
+//		super();
+//		this.name = name;
+//	}  
 
-	/** 
-	 * Constructor   
-	 * 
-	 * #4 - Used for constructor injection.  
-	 * 
-	 * Do NOT include "id" as parameter.  It is a generated value that 
-	 * Hibernate will inject with setter.
-     */	 
-	public PetType (String name) {
-		super();
-		this.name = name;
-	}  
 
-	// -----------------------------------------------
-	// Getters / Setters
-	// Used by Spring JPA / Hibernate to do Dependency Injection (DI)
-	// if doing setter injection - though constructor injection preferred 
-	// -----------------------------------------------
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
+// -----------------------------------------------
+// LOMBOK generates @Getters and @Setters 
+// -----------------------------------------------
+//
+//	// -----------------------------------------------
+//	// Getters / Setters
+//	// Used by Spring JPA / Hibernate to do Dependency Injection (DI)
+//	// if doing setter injection - though constructor injection preferred 
+//	// -----------------------------------------------
+//
+//	public String getName() {
+//		return name;
+//	}
+//
+//	public void setName(String name) {
+//		this.name = name;
+//	}
 
 	// -----------------------------------------------
 	// #5 Methods that override Java default functionality.

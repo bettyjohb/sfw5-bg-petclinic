@@ -20,7 +20,17 @@ package guru.springframework5.sfw5bgpetclinic.model;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
+@Getter                	// Only doing Lombok getters/setters/AllArgs/NoArgs for super classes. 
+@Setter 
+@NoArgsConstructor
+@AllArgsConstructor     // Not passing in generated "id" to super BaseEntity constructor, so use @AllArgs.
+                        // This constructor is called by the child class Owner's @Builder constructor
+//@Builder		       	// Don't do @Builder.  Child class is @Builder, this just provides needed constructor.
 @MappedSuperclass 		  
 public class Person extends BaseEntity {
 	
@@ -46,63 +56,68 @@ public class Person extends BaseEntity {
 	private String lastName;
 
 	// -----------------------------------------------
-	// Constructors  
+	// Constructors - LOMBOK generated @NoArgsConstructor
+	//                LOMBOK generated @AllArgsConstructor
 	// -----------------------------------------------
 
-	/**
-	 * Default constructor (required of JPA entity objects)
-	 */
-	public Person() {
-		super();
+//	/**
+//	 * Default constructor (required of JPA entity objects)
+//	 */
+//	public Person() {
+//		super();
+//
+//		firstName = null;
+//		lastName = null;
+//	}
 
-		firstName = null;
-		lastName = null;
-	}
+//	/**
+//	 * Constructor for Person class. (Used for constructor injection #4)
+//	 * THIS CONSTRUCTOR IS CALLED BY THE @Builder constructor in Owner.    
+//	 * Do NOT include "id" as parameter.  It is a generated value that 
+//	 * Hibernate will inject with setter. 
+//	 * 
+//	 * @param firstName Person's first name
+//	 * @param lastName Person's last name
+//	 *  
+//	 * @author Betty Jo Booth
+//	 * @version 1.0
+//	 * @since 1.0
+//	 */
+//	public Person (String firstName, String lastName) {
+//		super();
+//		this.firstName = firstName;
+//		this.lastName = lastName;
+//	}
 
-	/**
-	 * Constructor for Person class. (Used for constructor injection #4)
-	 *
-	 * Do NOT include "id" as parameter.  It is a generated value that 
-	 * Hibernate will inject with setter. 
-	 * 
-	 * @param firstName Person's first name
-	 * @param lastName Person's last name
-	 *  
-	 * @author Betty Jo Booth
-	 * @version 1.0
-	 * @since 1.0
-	 */
-	public Person (String firstName, String lastName) {
-		super();
-		this.firstName = firstName;
-		this.lastName = lastName;
-	}
-
-	// -----------------------------------------------
-	// Getters / Setters
-	// Used by Spring JPA / Hibernate to do Dependency Injection (DI)
-	// if doing setter injection - though constructor injection preferred
-	//
-	// Validation is done within validate(), not in setters to adhere to 
-	// JavaBean restrictions (expect setters that return void and cannot 
-	// throw exceptions.  
-	// -----------------------------------------------
-
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
+// -----------------------------------------------
+// LOMBOK generates @Getters and @Setters 
+// -----------------------------------------------
+//
+//	// -----------------------------------------------
+//	// Getters / Setters
+//	// Used by Spring JPA / Hibernate to do Dependency Injection (DI)
+//	// if doing setter injection - though constructor injection preferred
+//	//
+//	// Validation is done within validate(), not in setters to adhere to 
+//	// JavaBean restrictions (expect setters that return void and cannot 
+//	// throw exceptions.  
+//	// -----------------------------------------------
+//
+//	public String getFirstName() {
+//		return firstName;
+//	}
+//
+//	public void setFirstName(String firstName) {
+//		this.firstName = firstName;
+//	}
+//
+//	public String getLastName() {
+//		return lastName;
+//	}
+//
+//	public void setLastName(String lastName) {
+//		this.lastName = lastName;
+//	}
 
 	// -----------------------------------------------
 	// #5 Methods that override Java default functionality.

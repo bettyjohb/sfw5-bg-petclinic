@@ -34,7 +34,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter       // Only doing Lombok getters/setters for super classes.
+@Setter 
+@NoArgsConstructor
+@AllArgsConstructor  // Used for @Builder (Lombok)
 @MappedSuperclass  // Tells the JPA provider to include the base class persistent properties as if 
                    // they were declared by the child class extending.  Therefore, won't make a  
                    // BaseEntity Table in DB with ID only.  Will instead add Long id to all classes 
@@ -59,27 +67,28 @@ public class BaseEntity implements Serializable {
 	private Long id;    // Use Long (not primitive long) in case of Hibernate since can be null   
 
 	// -----------------------------------------------
-	// Constructors
+	// Constructors - Lombok generated @NoArgsConstructor
+	//                Lombok generated @AllArgsConstructor (used for @Builder)
 	// -----------------------------------------------
 
-	/* 
-	 * Default constructor to adhere to Java Bean requirements. 
-	 */
-	public BaseEntity() {
-		super();
-	}
+//	/* 
+//	 * Default constructor to adhere to Java Bean requirements. 
+//	 */
+//	public BaseEntity() {
+//		super();
+//	}
 	
 	// -----------------------------------------------
-	// Getters / Setters
+	// Getters / Setters - Lombok @Getter and @Setter 
 	// -----------------------------------------------
-
-	public Long getId() {
-		return id;
-	}
-	
-	public void setId(Long id) {
-		this.id = id;
-	}
+//
+//	public Long getId() {
+//		return id;
+//	}
+//	
+//	public void setId(Long id) {
+//		this.id = id;
+//	}
 	
 	/**
 	 * Determines if two objects are logically equal.

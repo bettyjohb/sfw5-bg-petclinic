@@ -26,9 +26,17 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
- 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@NoArgsConstructor   // Lombok 
+@AllArgsConstructor	 // Lombok
+@Getter				 // Lombok
+@Setter              // Lombok
 @Entity 		       // Identify as JPA entity for DB
 @Table(name = "vets")  // optional - Can use Hibernate default
 public class Vet extends Person {
@@ -59,34 +67,17 @@ public class Vet extends Person {
 															// Null id's considered equal, but then compare rest of vals. 
 	
 	// -----------------------------------------------
-	// Constructors  
+	// Constructors  - LOMBOK generated @NoArgsConstructor
+	//				   LOMBOK generated @AllArgsConstructor
 	// -----------------------------------------------
 
-	/**
-	 * Default constructor (required of JPA entity objects)
-	 */
-	public Vet() {
-		super();
-	}
+//	/**
+//	 * Default constructor (required of JPA entity objects) - Lombok generated 
+//	 */
+//	public Vet() {
+//		super();
+//	}
 
-	// -----------------------------------------------
-	// Getters / Setters
-	// Used by Spring JPA / Hibernate to do Dependency Injection (DI)
-	// if doing setter injection - though constructor injection preferred
-	//
-	// Validation is done within validate(), not in setters to adhere to 
-	// JavaBean restrictions (expect setters that return void and cannot 
-	// throw exceptions.  
-	// -----------------------------------------------
-
-	public Set<Specialty> getSpecialties() {
-		return specialties;
-	}
-	
-	public void setSpecialties(Set<Specialty> specialties) {
-		this.specialties = specialties;
-	}
-	
 	// -----------------------------------------------
 	// Public Methods
 	// -----------------------------------------------
@@ -105,6 +96,28 @@ public class Vet extends Person {
 		return this.specialties.add(specialty);
 	}
 
+// -----------------------------------------------
+// LOMBOK generates @Getters and @Setters 
+// -----------------------------------------------
+//
+//	// -----------------------------------------------
+//	// Getters / Setters
+//	// Used by Spring JPA / Hibernate to do Dependency Injection (DI)
+//	// if doing setter injection - though constructor injection preferred
+//	//
+//	// Validation is done within validate(), not in setters to adhere to 
+//	// JavaBean restrictions (expect setters that return void and cannot 
+//	// throw exceptions.  
+//	// -----------------------------------------------
+//
+//	public Set<Specialty> getSpecialties() {
+//		return specialties;
+//	}
+//	
+//	public void setSpecialties(Set<Specialty> specialties) {
+//		this.specialties = specialties;
+//	}
+	
 	// -----------------------------------------------
 	// #5 Methods that override Java default functionality.
 	//    Required for JPA / Hibernate and by Sets. 
