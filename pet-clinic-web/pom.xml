@@ -60,11 +60,14 @@
 		<version>${webjars-bootstrap.version}</version>
 	</dependency>
 	<!-- end webjars -->
+	
+	<!-- TESTING with JUNIT (Spring Boot 2.2.0+ brings in JUnit 5) + Mockito, Spring Mock MVC test, etc. -->
 	<dependency>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-test</artifactId>
 		<scope>test</scope>
 		<exclusions>
+			<!-- Without this get error - "TestEngine with ID 'junit-vintage' failed to discover tests." -->
 			<exclusion>
 				<groupId>org.junit.vintage</groupId>
 				<artifactId>junit-vintage-engine</artifactId>
@@ -72,7 +75,7 @@
 		</exclusions>
 	</dependency>
   </dependencies>
-  
+
 	<build>
 		<plugins>
 			<!-- FROM ORIGINAL PET CLINIC for WRO plugin]--> 
@@ -108,6 +111,12 @@
 					<version>${mockito.version}</version>
 				</dependency>
 			</dependencies>
+			</plugin>
+			<plugin>
+				<!-- Bring in Maven Surefire plugin. Inherits version (current 2.22.2) -->
+				<!-- DO NOT include <dependency> for JUnit-platform-surefire-provider or compiler warns to use default from this surefire plugin -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</build>

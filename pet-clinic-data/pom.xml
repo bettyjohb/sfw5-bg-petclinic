@@ -31,16 +31,13 @@
 		<artifactId>lombok</artifactId>
 		<optional>true</optional>
 	</dependency>
-	<dependency>
-		<groupId>org.projectlombok</groupId>
-		<artifactId>lombok</artifactId>
-		<optional>true</optional>
-	</dependency>
+	<!-- TESTING with JUNIT (Spring Boot 2.2.0+ brings in JUnit 5) + Mockito, Spring Mock MVC test, etc. -->
 	<dependency>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-test</artifactId>
 		<scope>test</scope>
 		<exclusions>
+			<!-- Without this get error - "TestEngine with ID 'junit-vintage' failed to discover tests." -->
 			<exclusion>
 				<groupId>org.junit.vintage</groupId>
 				<artifactId>junit-vintage-engine</artifactId>
@@ -51,9 +48,16 @@
   
 	<build>
 		<plugins>
+			<!-- Surefire plugin works w/o any explicit build instructions as a <plugin> within IDE, but add below so do from mvn. -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<!-- Bring in Maven Surefire plugin. Inherits version (current 2.22.2) -->
+				<!-- DO NOT include <dependency> for JUnit-platform-surefire-provider or compiler warns to use default from this surefire plugin -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>   
 			</plugin>
 		</plugins>
 	</build>  
