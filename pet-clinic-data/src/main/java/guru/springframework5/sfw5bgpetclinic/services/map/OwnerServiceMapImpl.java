@@ -81,15 +81,22 @@ public class OwnerServiceMapImpl extends AbstractMapService<Owner, Long> impleme
 	// -------------------------------------------------------
     public Owner findByLastName(String lastName) {
 
-    	Iterator it = map.entrySet().iterator();
-    	while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry)it.next();
-            Owner o = (Owner)pair.getValue();
-            if (o.getLastName().equals(lastName))
-            	return o; 
-        }
+    	// Return the first instance with the same last name.
+    	return this.findAll()   // Set<Owner> of all owners. 
+    			   .stream()    // Stream<Owner> of all owners
+    			   .filter(owner -> owner.getLastName().equalsIgnoreCase(lastName)) // Stream<Owner> has only Owners with lastName
+    			   .findFirst() // Optional<Owner> returns first instance if > 1
+    			   .orElse(null);  
+    	
+    	//Iterator it = map.entrySet().iterator();
+    	//while (it.hasNext()) {
+        //   Map.Entry pair = (Map.Entry)it.next();
+        //    Owner o = (Owner)pair.getValue();
+        //    if (o.getLastName().equals(lastName))
+        //    	return o; 
+        //}
         // Found nothing
-        return null;
+        //return null;
     }
     
 	// -------------------------------------------------------
