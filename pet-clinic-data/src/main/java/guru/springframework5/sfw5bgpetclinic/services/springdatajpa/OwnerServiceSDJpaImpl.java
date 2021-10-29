@@ -112,7 +112,7 @@ public class OwnerServiceSDJpaImpl implements OwnerService {
 	@Override
 	public Owner findById(Long id) {
 		
-		// SHORT CODE
+		// SHORT CODE - If not found, Optional.isEmpty() returned and can go on to do orElse(null)
 		return ownerRepository.findById(id).orElse(null);
 		
 		// LONG CODE 

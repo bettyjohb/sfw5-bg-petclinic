@@ -61,7 +61,9 @@
 	</dependency>
 	<!-- end webjars -->
 	
-	<!-- TESTING with JUNIT (Spring Boot 2.2.0+ brings in JUnit 5) + Mockito, Spring Mock MVC test, etc. -->
+	<!-- TESTING with JUNIT (Spring Boot 2.2.0+ brings in JUnit 5, + Mockito, Spring Mock MVC test, etc.) -->
+	<!-- JUnit 5 comes with JUnit Platform, JUnit Jupiter for JUnit 5, and JUnit Vintage if old tests (exclude if not) -->
+	<!-- Therefore, don't need Mockito <dependencies> for Jupiter, etc. -->
 	<dependency>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-test</artifactId>
@@ -76,6 +78,7 @@
 	</dependency>
   </dependencies>
 
+    <!-- Package as an executable jar -->
 	<build>
 		<plugins>
 			<!-- FROM ORIGINAL PET CLINIC for WRO plugin]--> 
