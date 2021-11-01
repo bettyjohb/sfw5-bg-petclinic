@@ -120,7 +120,7 @@ class OwnerControllerTest {
 	
 	@Test
 	void testFail() throws Exception {
-		assert(true);
+		assert(false);
 	}
 	
 
