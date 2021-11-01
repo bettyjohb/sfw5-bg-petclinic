@@ -61,9 +61,11 @@
 	</dependency>
 	<!-- end webjars -->
 	
-	<!-- TESTING with JUNIT (Spring Boot 2.2.0+ brings in JUnit 5, + Mockito, Spring Mock MVC test, etc.) -->
+	<!-- TESTING with JUNIT (Spring Boot 2.2.0+ brings in JUnit 5 + Mockito, Spring Mock MVC test, etc.) -->
 	<!-- JUnit 5 comes with JUnit Platform, JUnit Jupiter for JUnit 5, and JUnit Vintage if old tests (exclude if not) -->
-	<!-- Therefore, don't need Mockito <dependencies> for Jupiter, etc. -->
+	<!-- IF EARLIER SPRING BOOT (pre-2.2.0), need to <exclusion>junit (so removes default JUnit4) then include -->
+	<!-- <dependency> for juit-jupiter-api, junit-jupiter-engine, mockito-junit-jupiter.   -->
+	<!-- Again, our Spring Boot version gives by default so don't need to specify. -->
 	<dependency>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-test</artifactId>
