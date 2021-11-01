@@ -117,11 +117,4 @@ class OwnerControllerTest {
 		// interacting with OwnerServicce until method in class is implemented. 
 		org.mockito.Mockito.verify(ownerService, org.mockito.Mockito.times(0)).findAll();
 	}
-	
-	@Test
-	void testFail() throws Exception {
-		assert(false);
-	}
-	
-
 }  // end class 
