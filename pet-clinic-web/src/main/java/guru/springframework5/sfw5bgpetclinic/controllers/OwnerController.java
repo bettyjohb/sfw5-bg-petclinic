@@ -23,16 +23,26 @@ package guru.springframework5.sfw5bgpetclinic.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import guru.springframework5.sfw5bgpetclinic.model.Owner;
 import guru.springframework5.sfw5bgpetclinic.services.OwnerService;
 
 @Controller     // #1 - Tell Spring this is a Spring MVC Controller to be instantiated.
 @RequestMapping("/owners")    // Set up that this controller looks in owners 
 public class OwnerController {
 
+	// --------------------------------------------------------------
+	// Attriutes
+	// --------------------------------------------------------------
 	private final OwnerService ownerService;   // Interface - So actual instance can be MAP, DB, etc. 
 	
+	// --------------------------------------------------------------
+	// Constructor 
+	// --------------------------------------------------------------
+
 	// @Autowired not required in Spring 5. 
 	// Component Scan sees @Controller and instantiates OwnerController bean; thereby using Constructor and 
 	// injecting OwnerService (which is a @Service and therefore available for Spring Context to see). 
@@ -41,6 +51,10 @@ public class OwnerController {
 		this.ownerService = ownerService;
 	}  // end constructor
 	
+	// --------------------------------------------------------------
+	// Show multiple Owners or Single Owner Details
+	// --------------------------------------------------------------
+
 	// #2 - Tell Spring this is a Controller method to handle HTTP requests.
 	//      Specifically, this method handles if user ends URL with /owners, /owners/index or /owners/index.html.
 	//      [Get /owners from class level RequestMapping above.]
@@ -63,9 +77,19 @@ public class OwnerController {
 	//      - For now, return core name of Thymneleaf template "notImplemented.html"  
     @RequestMapping({"/find"})   // Controller level RequestMapping looks for these in owners
 	public String findOwners() {
-		  
 	  	return "notImplemented";  // Spring looks in templates notImplemented.html since Thymeleaf. 
 	  	                          // If JSP, ViewResolver would provide pre/suffix to build full jsp file/path. 
 	 }
 
+    @GetMapping("/{ownerId}")  // /owners is a/w controller class; add /{ownerId}
+    public String showOwner(@PathVariable String ownerId, Model model) {
+    	Owner owner = ownerService.findById(Long.valueOf(ownerId));
+    	model.addAttribute("owner", owner);
+    	return "owners/ownerDetails";
+    }
+
+    // -----------------------------------------------------------------------------
+    // Modify Owner
+    // 	-----------------------------------------------------------------------------
+    
 }  // end class OwnerController

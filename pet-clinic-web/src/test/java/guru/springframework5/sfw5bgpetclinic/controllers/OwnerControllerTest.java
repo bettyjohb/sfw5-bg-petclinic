@@ -117,4 +117,28 @@ class OwnerControllerTest {
 		// interacting with OwnerServicce until method in class is implemented. 
 		org.mockito.Mockito.verify(ownerService, org.mockito.Mockito.times(0)).findAll();
 	}
+
+	// -------------------------------------
+	// Test showOwner
+	// -------------------------------------
+
+	@Test
+	void testShowOwner() throws Exception {
+		Owner expectedOwner = Owner.builder().firstName("Bob").lastName("Smith").build();
+		expectedOwner.setId(1L);
+		org.mockito.Mockito.when(ownerService.findById(1L)).thenReturn(expectedOwner);
+		
+		// Verify when "perform" call, status ok, html page is showOwnerDetails, and 
+		// Owner returned is the expectedOwner that has ID = 1L (retrieved by Service and placed on Model)
+		mockMvc.perform(MockMvcRequestBuilders.get("/owners/1"))
+			   .andExpect(MockMvcResultMatchers.status().isOk())
+			   .andExpect(MockMvcResultMatchers.view().name("owners/ownerDetails"))
+			   .andExpect(MockMvcResultMatchers.model().attribute("owner", org.hamcrest.Matchers.hasProperty("id", org.hamcrest.Matchers.equalTo(1L))));
+			
+
+		//org.motckito.mockitoverify zero interactions with owner service "mock."  SHould not be 
+		// interacting with OwnerServicce until method in class is implemented. 
+		org.mockito.Mockito.verify(ownerService, org.mockito.Mockito.times(1)).findById(1L);
+	}
+
 }  // end class 
