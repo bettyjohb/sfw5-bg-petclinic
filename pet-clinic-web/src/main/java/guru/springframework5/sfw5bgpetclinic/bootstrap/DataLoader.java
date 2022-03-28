@@ -82,11 +82,11 @@ public class DataLoader implements CommandLineRunner {
 		// This is done in AbstractMapService so as not to mess up model or regular services for JPA/Hibernate DB 
 		// that provided this by default. 
 		PetType dog = new PetType();
-		dog.setName("DOG");
+		dog.setName("Dog");
 		PetType saveDogPetType = petTypeService.save(dog);
 
 		PetType cat = new PetType();
-		cat.setName("CAT");
+		cat.setName("Cat");
 		PetType saveCatPetType = petTypeService.save(cat);
 
 		Specialty radiology = new Specialty();
