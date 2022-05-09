@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org"
+  			th:replace="~{fragments/layout :: layout (~{::body},'owners')}">
+<body>
+
+	<h2>Owners</h2>
+	
+	<table id="vets" class="table table-striped">
+		<thead>
+		<tr>
+			<th style="...">Name</th>
+			<th style="...">Address</th>
+			<th>City</th>
+			<th style="...">Telephone</th>
+			<th>Pets</th>
+		</tr>	
+		</thead>
+		
+		<tbody>
+		<tr th:each="owner : ${owners}">
+			<td>
+			    <!-- create link format @{/owners/1} so surround text with '/owners/' -->
+				<a th:href="@{'/owners/' + ${owner.id}}" th:text="${owner.firstName + ' ' + owner.lastName}"/></a>
+			</td>
+			<td th:text="${owner.address}"/>
+			<td th:text="${owner.city}"/>
+			<td th:text="${owner.telephone}"/>
+			<td><span th:each="pet : ${owner.pets}" th:text="${pet.name} "/></td>
+		 </tr>
+		 </tbody>
+	</table>
+	
+  </body>
+</html>

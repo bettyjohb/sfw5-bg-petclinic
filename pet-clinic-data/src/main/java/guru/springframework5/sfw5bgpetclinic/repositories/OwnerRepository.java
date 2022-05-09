@@ -9,6 +9,9 @@
  * Provides the interface for performing CRUD ops on the DB for Category entity objects.   
  */
 package guru.springframework5.sfw5bgpetclinic.repositories;
+import java.util.HashSet;
+import java.util.List;
+
 import org.springframework.data.repository.CrudRepository;
 import guru.springframework5.sfw5bgpetclinic.model.Owner;
 
@@ -16,5 +19,9 @@ public interface OwnerRepository extends CrudRepository<Owner, Long> {     // Lo
 
 	// Implement custom JPA Query methods (not provided by CrudRepository) with special find capabilities, etc. 
 	public Owner findByLastName(String lastName);
+	
+	// Spring Data JPA allows searching for names containing given string
+	// "findAllBy" + property in camel back format + "Like"
+	public HashSet<Owner> findAllByLastNameLike(String lastNameLike);
 	
 }  // end interface OwnerRepository

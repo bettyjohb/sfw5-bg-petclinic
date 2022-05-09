@@ -39,7 +39,9 @@
 //***************************************************************************
 package guru.springframework5.sfw5bgpetclinic.services.map;
 
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -79,7 +81,8 @@ public class OwnerServiceMapImpl extends AbstractMapService<Owner, Long> impleme
 	// that just call super.someMethod, we implement it here
 	// since its a VetService interface w/o an implementation. 
 	// -------------------------------------------------------
-    public Owner findByLastName(String lastName) {
+    @Override
+	public Owner findByLastName(String lastName) {
 
     	// Return the first instance with the same last name.
     	return this.findAll()   // Set<Owner> of all owners. 
@@ -99,6 +102,15 @@ public class OwnerServiceMapImpl extends AbstractMapService<Owner, Long> impleme
         //return null;
     }
     
+	// Spring Data JPA allows searching for names containing given string
+	// "findAllBy" + property in camel back format + "Like"
+	@Override
+    public HashSet<Owner> findAllByLastNameLike(String lastNameLike) {
+		// ToDo - - Not implemented.
+		System.out.println ("Not implemented.");
+		return null;
+	}
+
 	// -------------------------------------------------------
 	// Implementation of BaseService (extended by OwnerService)
 	// -------------------------------------------------------

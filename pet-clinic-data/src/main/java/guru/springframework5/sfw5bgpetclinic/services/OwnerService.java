@@ -37,11 +37,17 @@
 //    This will be an IMPL determined at runtime by @Profile and application.properties. 
 //***************************************************************************
 package guru.springframework5.sfw5bgpetclinic.services;
+import java.util.HashSet;
+import java.util.List;
 import guru.springframework5.sfw5bgpetclinic.model.Owner;
 
 public interface OwnerService extends BaseService<Owner, Long> {
 
 	// Methods specific to OwnerService.  
 	Owner findByLastName(String lastName);
+	
+	// Spring Data JPA allows searching for names containing given string
+	// "findAllBy" + property in camel back format + "Like"
+	HashSet<Owner> findAllByLastNameLike(String lastNameLike);
 	
 }  // end interface OwnerService

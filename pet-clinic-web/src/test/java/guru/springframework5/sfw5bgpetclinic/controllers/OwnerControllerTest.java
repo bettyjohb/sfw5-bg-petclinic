@@ -1,6 +1,8 @@
 package guru.springframework5.sfw5bgpetclinic.controllers;
 
 import java.util.HashSet;
+
+import org.hibernate.dialect.identity.Oracle12cGetGeneratedKeysDelegate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -64,58 +66,58 @@ class OwnerControllerTest {
 		mockMvc = MockMvcBuilders.standaloneSetup(ownerController).build();
 	}
 
-	// -------------------------------------
-	// Test listOwners (get("/owners") then get("get/owners/index")
-	// -------------------------------------
-
-	@Test
-	// Mock MVC will allow you to test controllers without bringing up Spring Context. 
-	// Action:  This test invokes a mock HTTP get request ("/owners") so MockMvc invokes 
-	//          OwnerController's listOwners method. 
-	// Verification:  HTTP status is OK (200); view name returned is "owners.index"; 
-	//                model's "owners" attribute Controller got from OwnerService call is a 
-	//                Set<Owner> of size 2. 
-	void testListOwners() throws Exception {
-		// Before each test, setUp() creates mock data and sets up MockMvc with controller tested. 
-		// Indicate what data Mockito is to return (absent a DB) "when" findAll() invoked.
-		// findAll() does not use orElse so just return direct reference (not Optional.of(reference)).
-		org.mockito.Mockito.when(ownerService.findAll()).thenReturn(expectedOwners);
-		
-		// Test findOwners - Use MockMvc to fake an HTTP get request "/owners" by the browser.
-		// [RequestMapping of Controller class is "/owners" then add RequestMapping over method ("", "/", "/index", "index.html")]
-		// We DO NOT prepopulate Model.  OwnerController method will take the "owners" returned from 
-		// ownerService.findAll() and addAttibute to model.  In this case, Set of two Owners.
-		// Just "mock" what injected service returns since it is not linked to DB.  
-		mockMvc.perform(MockMvcRequestBuilders.get("/owners"))					// Fake HTTP get "/owners"
-		       .andExpect(MockMvcResultMatchers.status().isOk())       			// Check http status 200
-		       .andExpect(MockMvcResultMatchers.view().name("owners/index"))	// Check view name returned
-		       .andExpect(MockMvcResultMatchers.model().attribute("owners", org.hamcrest.Matchers.hasSize(2)));  // Data for key "owners" in Model
-	}
-
-	@Test
-	// Same as above test.  Just get invokes with different path /owners/index
-	void testListOwnersPathOwnersIndex() throws Exception {
-		org.mockito.Mockito.when(ownerService.findAll()).thenReturn(expectedOwners);
-		
-		mockMvc.perform(MockMvcRequestBuilders.get("/owners/index"))			// Fake HTTP get "/owners/index"
-		       .andExpect(MockMvcResultMatchers.status().isOk())       			// Check http status 200
-		       .andExpect(MockMvcResultMatchers.view().name("owners/index"))	// Check view name returned
-		       .andExpect(MockMvcResultMatchers.model().attribute("owners", org.hamcrest.Matchers.hasSize(2)));  // Data for key "owners" in Model
-	}
 
 	// -------------------------------------
 	// Test findOwners
 	// -------------------------------------
 
 	@Test
-	void testFindOwners() throws Exception {
+	void testInitFindForm() throws Exception {
 		mockMvc.perform(MockMvcRequestBuilders.get("/owners/find"))
 			   .andExpect(MockMvcResultMatchers.status().isOk())
-			   .andExpect(MockMvcResultMatchers.view().name("notImplemented"));
+			   .andExpect(MockMvcResultMatchers.view().name("owners/findOwners"))
+			   .andExpect(MockMvcResultMatchers.model().attributeExists("owner"));
 
 		//org.motckito.mockitoverify zero interactions with owner service "mock."  SHould not be 
 		// interacting with OwnerServicce until method in class is implemented. 
 		org.mockito.Mockito.verify(ownerService, org.mockito.Mockito.times(0)).findAll();
+	}
+
+	@Test
+	void testProcessFindFormReturnMany() throws Exception {
+		// Spring Data JPA allows OwnerService to do custom find using repository.
+		// Format "findAllBy" + property name + "Like" so search anything with that string
+		org.mockito.Mockito.when(ownerService.findAllByLastNameLike(org.mockito.Mockito.anyString()))
+		                                     .thenReturn(expectedOwners);
+		
+		mockMvc.perform(MockMvcRequestBuilders.get("/owners"))
+			   .andExpect(MockMvcResultMatchers.status().isOk())
+			   .andExpect(MockMvcResultMatchers.view().name("owners/listOwners"))
+			   .andExpect(MockMvcResultMatchers.model().attribute("owners", org.hamcrest.Matchers.hasSize(2)));
+
+		//org.motckito.mockitoverify zero interactions with owner service "mock."  SHould not be 
+		// interacting with OwnerServicce until method in class is implemented. 
+		org.mockito.Mockito.verify(ownerService, org.mockito.Mockito.times(1)).findAllByLastNameLike(org.mockito.Mockito.anyString());
+	}
+
+	@Test
+	void testProcessFindFormReturnOne() throws Exception {
+		// Make expectedOwners a set of one. 
+		expectedOwners.clear();
+		Owner owner = Owner.builder().firstName("Bob").lastName("Smith").build();
+		owner.setId(1L); 
+		expectedOwners.add(owner);
+
+		// Spring Data JPA allows OwnerService to do custom find.
+		// Format "findAllBy" + propert name + "Like" so search anything with that string
+		org.mockito.Mockito.when(ownerService.findAllByLastNameLike(org.mockito.Mockito.anyString())).thenReturn(expectedOwners);
+
+		mockMvc.perform(MockMvcRequestBuilders.get("/owners"))
+			   .andExpect(MockMvcResultMatchers.status().is3xxRedirection())  // To show details on single owner found 
+			   .andExpect(MockMvcResultMatchers.view().name("redirect:/owners/1"));  // Check view name returned lists all ingredients
+		
+		// then - verify controller calls service only once 
+		org.mockito.Mockito.verify(ownerService, org.mockito.Mockito.times(1)).findAllByLastNameLike(org.mockito.Mockito.anyString());
 	}
 
 	// -------------------------------------
@@ -127,7 +129,7 @@ class OwnerControllerTest {
 		Owner expectedOwner = Owner.builder().firstName("Bob").lastName("Smith").build();
 		expectedOwner.setId(1L);
 		org.mockito.Mockito.when(ownerService.findById(1L)).thenReturn(expectedOwner);
-		
+
 		// Verify when "perform" call, status ok, html page is showOwnerDetails, and 
 		// Owner returned is the expectedOwner that has ID = 1L (retrieved by Service and placed on Model)
 		mockMvc.perform(MockMvcRequestBuilders.get("/owners/1"))
@@ -135,10 +137,78 @@ class OwnerControllerTest {
 			   .andExpect(MockMvcResultMatchers.view().name("owners/ownerDetails"))
 			   .andExpect(MockMvcResultMatchers.model().attribute("owner", org.hamcrest.Matchers.hasProperty("id", org.hamcrest.Matchers.equalTo(1L))));
 			
-
 		//org.motckito.mockitoverify zero interactions with owner service "mock."  SHould not be 
 		// interacting with OwnerServicce until method in class is implemented. 
 		org.mockito.Mockito.verify(ownerService, org.mockito.Mockito.times(1)).findById(1L);
+	}
+
+	// -------------------------------------
+	// Test Create or Update Owner 
+	// -------------------------------------
+
+	@Test
+	void initCreateOwnerForm() throws Exception { 
+		// "perform" mock GET for mapping /owners/new.  Display page with empty Owner.
+		// Verify status "ok", create or update view returned, and an (empty) owner is in Model.
+		mockMvc.perform(MockMvcRequestBuilders.get("/owners/new"))    // request mapping to GET new
+			   .andExpect(MockMvcResultMatchers.status().isOk())
+			   .andExpect(MockMvcResultMatchers.view().name("owners/createOrUpdateOwner"))
+			   .andExpect(MockMvcResultMatchers.model().attributeExists("owner"));
+		// Verify owner service not invoked.  Not saving or retrieving from DB. 
+		org.mockito.Mockito.verify(ownerService, org.mockito.Mockito.times(0)).findById(1L);
+	}
+	
+	@Test
+	void processCreateOwnerForm() throws Exception { 
+		// Create dummy Owner to return when service save is called. 
+		Owner expectedOwner = Owner.builder().build();
+		expectedOwner.setId(1L);
+		org.mockito.Mockito.when (ownerService.save(org.mockito.ArgumentMatchers.any()))
+		                                               .thenReturn(expectedOwner);
+		// "perform" mock POST for mapping /owners/new.
+		// Verify have owner (returned by service save) and redirects to show detail of new saved owner. 
+		mockMvc.perform(MockMvcRequestBuilders.post("/owners/new"))    // request mapping to POST new
+			   .andExpect(MockMvcResultMatchers.status().is3xxRedirection())  // Show new owner saved 
+			   .andExpect(MockMvcResultMatchers.view().name("redirect:/owners/1"))  // Back to controller to show
+			   .andExpect(MockMvcResultMatchers.model().attributeExists("owner"));
+		
+		// Verify /owners/new mapping results in Controller invoking save once.  
+		org.mockito.Mockito.verify(ownerService, org.mockito.Mockito.times(1)).save(org.mockito.ArgumentMatchers.any());
+	}
+	
+	@Test
+	void initUpdateOwnerForm() throws Exception { 
+		// Create dummy Owner to return when service findById is called to get Owner to update. 
+		Owner expectedOwner = Owner.builder().build();
+		expectedOwner.setId(1L);
+		org.mockito.Mockito.when (ownerService.findById(1L)).thenReturn(expectedOwner);
+		
+		// "perform" mock GET for mapping /owners/update. Will retrieve Owner with ID and display form.
+		// Verify status "ok", create or update view returned, and owner to update is in Model.
+		mockMvc.perform(MockMvcRequestBuilders.get("/owners/1/update"))    // request mapping to GET update
+			   .andExpect(MockMvcResultMatchers.status().isOk())
+			   .andExpect(MockMvcResultMatchers.view().name("owners/createOrUpdateOwner"))
+			   .andExpect(MockMvcResultMatchers.model().attributeExists("owner"));
+
+		// Verify owner service find by ID invoked to get the Owner to be modified from the DB. 
+		org.mockito.Mockito.verify(ownerService, org.mockito.Mockito.times(1)).findById(1L);
+	}
+	
+	@Test
+	void processUpdateOwnerForm() throws Exception { 
+		// Create dummy Owner to return when service save is called. 
+		Owner expectedOwner = Owner.builder().build();
+		expectedOwner.setId(1L);
+		org.mockito.Mockito.when (ownerService.save(org.mockito.ArgumentMatchers.any()))
+		                                               .thenReturn(expectedOwner);
+		// "perform" mock POST for mapping /owners/update.  Save and redirect to show updaed Owner. 
+		// Verify have owner (returned by service save) and redirects to show detail of owner. 
+		mockMvc.perform(MockMvcRequestBuilders.post("/owners/1/update"))    // request mapping to POST update
+			   .andExpect(MockMvcResultMatchers.status().is3xxRedirection())  // Show updated owner saved 
+			   .andExpect(MockMvcResultMatchers.view().name("redirect:/owners/1"));  // Back to controller to show
+		
+		// Verify /owners/new mapping results in Controller invoking save once.  
+		org.mockito.Mockito.verify(ownerService, org.mockito.Mockito.times(1)).save(org.mockito.ArgumentMatchers.any());
 	}
 
 }  // end class 

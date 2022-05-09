@@ -34,6 +34,7 @@
 package guru.springframework5.sfw5bgpetclinic.services.springdatajpa;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.context.annotation.Profile;
@@ -72,6 +73,13 @@ public class OwnerServiceSDJpaImpl implements OwnerService {
 	@Override
 	public Owner findByLastName(String lastName) {
 		return ownerRepository.findByLastName(lastName);
+    }
+
+	// Take advantage of Spring Data JPA's ability to provide custom find methods 
+	// given the required naming convention is followed. findAllBy + property + Like
+	@Override
+	public HashSet<Owner> findAllByLastNameLike(String lastNameLike) {
+		return ownerRepository.findAllByLastNameLike(lastNameLike);
     }
 
 	// -------------------------------------------------------

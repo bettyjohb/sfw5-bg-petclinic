@@ -66,6 +66,12 @@ public class BaseEntity implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)  // Or can be TABLE, SEQUENCE, AUTO
 	private Long id;    // Use Long (not primitive long) in case of Hibernate since can be null   
 
+	// Allows Thymeleaf like "th:with="text=${owner['new']} ? 'Add Owner' : 'Update Owner'"
+	// 'new' will essentially invoke isNew
+	public boolean isNew() {
+		return this.id == null;
+	}
+	
 	// -----------------------------------------------
 	// Constructors - Lombok generated @NoArgsConstructor
 	//                Lombok generated @AllArgsConstructor (used for @Builder)
