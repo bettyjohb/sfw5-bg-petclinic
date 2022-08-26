@@ -68,12 +68,13 @@ public class Visit extends BaseEntity {
 	private Pet pet;
 		
 	// -----------------------------------------------
-	// Constructors  
+	// Constructors 
 	// -----------------------------------------------
 
+	// Not LOMBOK - Need custom to get Date/Time
+	@Builder 
 	public Visit() {
 		super();
-
 		date = LocalDate.now();  // obtain current date from system clock.
 	}
 
@@ -92,6 +93,8 @@ public class Visit extends BaseEntity {
 	 * @version 1.0
 	 * @since 1.0
 	 */
+	@Builder // Don't include id.  It is generated.  Set with setter.  If Spring, will inject with setter. 
+             // Don't allow visits because bidirectional and need "pet.add(visit)" to make sure pet gets set as add each visit. 
 	public Visit (LocalDate date, String description, Pet pet) {
 		super();
 		this.date = date;
@@ -137,8 +140,11 @@ public class Visit extends BaseEntity {
 //	}
 //	
 	public void setPet(Pet pet) {
-		this.pet = pet;
-		this.pet.add(this);
+		if ( (this.pet == null) || !(this.pet.equals(pet)) ) {
+			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! SETTING VISITS PET ATTRIBUTE TO PET");
+			this.pet = pet;
+			this.pet.add(this);
+		}
 	}
 	
 	// -----------------------------------------------
@@ -164,6 +170,8 @@ public class Visit extends BaseEntity {
 	@Override
 	public boolean equals (Object o)
 	{
+		System.out.println("Invoked visit:equals");
+		
 		// Check if both object reference variables reference the same object in memory.
 		if (o == this)
 			return true;
@@ -180,7 +188,17 @@ public class Visit extends BaseEntity {
 		// Determine if instance variables maintained by base class are equal.  If not, return false.  
 		if (!(super.equals(o)))
 			return false;
-	
+
+		// -----------------------------------------------------
+		// At this point, both 'this' and 'vo' are new OR are existing with same id. 
+		// -----------------------------------------------------
+		
+		// If same non-null id, equal regardless of remaining since could be update.  
+		if (!this.isNew())
+			return true;
+		
+		// Otherwise, both new (null id), compare remaining values. 
+			
 		// Date  
 		if (this.date == null) 
 		{
@@ -266,9 +284,21 @@ public class Visit extends BaseEntity {
 	@Override
 	public int hashCode()
 	{
+		System.out.println("invoked Hashcode");
+		
 		final int prime = 17;
 		int result = super.hashCode();
 		
+		// If not new, base hashcode on id only.  For existing (id not null), equals() will return true if id's 
+		// are the same; false otherwise.  Therefore, hashCode must return the same value.  However, updates can 
+		// have same id for two visits (one with updated values, the other with values from DB).   
+		// descriptions. 
+		if (!isNew()) {
+			return result;  // id belongs to base entity - handled by call to super
+		}
+		
+		// For new (id null), include other values. 
+
 		// In this algorithm, based on Joshua Bloch's blog, if an attribute is an 
 		// Object (i.e., String) return 0 if null or call hashCode() on it.
 		// NOTE:  String.hashCode() returns the same int value for strings of the 

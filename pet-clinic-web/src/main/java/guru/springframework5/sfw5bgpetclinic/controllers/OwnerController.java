@@ -156,6 +156,7 @@ public class OwnerController {
     @GetMapping("/{ownerId}/update")    // Controller mapping "/owners" + "/new"
 	public String initUpdateOwnerForm(@PathVariable String ownerId, Model model) throws Exception { 
     	// Invoke OwnerService to retrieve Owner to be updated (noted by owneId).
+    	// Therefore, all intact (id, Set<Pet>, etc. since from DB. 
     	Owner owner = ownerService.findById(Long.valueOf(ownerId));
     	model.addAttribute("owner", owner);
     	return "owners/createOrUpdateOwner";
@@ -169,6 +170,11 @@ public class OwnerController {
 	public String processUpdateOwnerForm(@PathVariable String ownerId, Owner owner) throws Exception { 
     	// InitBinder above prevents from prepopulating ID when passed from form.  Set it from param here. 
     	owner.setId(Long.valueOf(ownerId));
+    
+    	// NOTE:  The Set<Pet> attribute of Owner does not get forwarded from the form (just fields).  However, Pets are 
+    	// stored in separate Table in DB with foreign key to link them back to the Owner, and Pets are created/mod/del 
+    	// in their own Pet form.  Only Owner basics in Owners Table are updated here. When save with null Pet list, does not 
+    	// affect Owner table.  
     	Owner updatedOwner = ownerService.save(owner);
     	return "redirect:/owners/" + updatedOwner.getId();
 	}

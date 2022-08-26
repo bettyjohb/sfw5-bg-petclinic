@@ -24,6 +24,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.springframework.util.StringUtils;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -70,8 +73,7 @@ public class Owner extends Person {
 																// mappedBy = says "owner" (attrib of Pet) is foreign key to get Pet back to Owner.
 	 															// In turn, Pet will specify @ManyToOne and @JoinColumn as owner_id
 	private Set<Pet> pets = new HashSet<>();    // HashSet does not have duplicates.  Based on equals().  Can have null id's until save().  
-	                                            // Equals will allow compare two new pets with null ids.
-	                                            // Null id's considered equal, but then compare rest of vals.
+	                                            // Equal() says equal if id's same; ignore rest of values.
 
 	// -----------------------------------------------
 	// Constructors - LOMBOK generated @NoArgsConstructor
@@ -91,7 +93,7 @@ public class Owner extends Person {
 		this.address = address;
 		this.city = city;
 		this.telephone = telephone;
-		this.pets = pets;
+		if (pets != null) this.pets = pets;
 	}
 	
 	// -----------------------------------------------
@@ -116,6 +118,31 @@ public class Owner extends Person {
 		
 		// Pet was not added to Owner. 
 		return false;
+	}
+
+	/**
+	 * Retrieve Pet by name.    
+	 * @param name - Name of Pet to retrieve.  
+	 * @return Pet; null if not found. 
+	 */
+	public Pet getPet(String name, boolean ignoreNew) {
+		if ( (name == null) || (!StringUtils.hasLength(name)) )
+			return null;
+		
+		// Search for the pet with the same name. 
+		name = name.toLowerCase();	
+		for (Pet curPet : pets) {
+			if (!ignoreNew || !curPet.isNew()) {
+				String compName = curPet.getName().toLowerCase();
+				if (compName.equals(name))  {
+					System.out.println ("Found name " + compName);
+					return curPet;
+				}	
+			}
+		}
+		
+		System.out.println("Not found name " + name);
+		return null;  // Pet with requested name was not found. 
 	}
 
 // -----------------------------------------------
@@ -198,10 +225,20 @@ public class Owner extends Person {
 		
 		Owner owner = (Owner)o;
 		
-		// Validate instance variables managed by base class.  If not equal, return false.  
+		// Determine if instance variables maintained by base class are equal.  If not, return false.  
 		if (!(super.equals(o)))
 			return false;
-		
+
+		// -----------------------------------------------------
+		// At this point, both 'this' and 'vo' are new OR are existing with same id. 
+		// -----------------------------------------------------
+
+		// If same non-null id, equal regardless of remaining since could be update.  
+		if (!this.isNew())
+			return true;
+
+		// Otherwise, both new (null id), compare remaining values. 
+
 		// Address
 		if (this.address == null) 
 		{
@@ -289,6 +326,16 @@ public class Owner extends Person {
 	{
 		final int prime = 17;
 		int result = super.hashCode();
+		
+		// If not new, base hashcode on id only.  For existing (id not null), equals() will return true if id's 
+		// are the same; false otherwise.  Therefore, hashCode must return the same value.  However, updates can 
+		// have same id for two visits (one with updated values, the other with values from DB).   
+		// descriptions. 
+		if (!isNew()) {
+			return result;
+		}
+		
+		// For new (id null), include other values. 
 		
 		// In this algorithm, based on Joshua Bloch's blog, if an attribute is an 
 		// Object (i.e., String) return 0 if null or call hashCode() on it.

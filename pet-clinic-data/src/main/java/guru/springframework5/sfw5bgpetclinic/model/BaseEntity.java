@@ -71,7 +71,7 @@ public class BaseEntity implements Serializable {
 	public boolean isNew() {
 		return this.id == null;
 	}
-	
+
 	// -----------------------------------------------
 	// Constructors - Lombok generated @NoArgsConstructor
 	//                Lombok generated @AllArgsConstructor (used for @Builder)
@@ -97,10 +97,10 @@ public class BaseEntity implements Serializable {
 //	}
 	
 	/**
-	 * Determines if two objects are logically equal.
+	 * Determines if two objects are logically equal based ONLY on same ID.
 	 * 
 	 * Logically equal means that they have the same "state" (instance 
-	 * variables have the same values).       
+	 * variables have the same values) - However, in this case we ONLY look at ID.       
 	 * 
 	 * This is needed by Hibernate and Collections (like Sets) to determine equality. 
 	 * 
@@ -125,7 +125,26 @@ public class BaseEntity implements Serializable {
 			return false;
 		
 		BaseEntity bo = (BaseEntity)o;
-		
+
+		// Two equal non-null id's are "equal".
+		// Two unequal non-null id's are unequal.
+		// If one or the other null, not the same. 
+		// If both null, 'equal' for base object.  Concrete would check remaining. 
+		// [Done this waqy so equals can determine if object exists in a Collection on update so don't add twice.
+		//  Remaining values may have been modified on update, so just look at id.]  
+		if ( !this.isNew() ) {   // 'this' is not new
+			if ( !bo.isNew() ) {    
+				if (this.id.compareTo(bo.id) != 0)  // bo is not new, but different id
+					return false;
+			} else {
+				return false;  // only bo is new. 
+			}
+		} else {  // 'this' is new 
+			if ( !bo.isNew() )  // only 'this' is new
+				return false;
+		}
+
+/*
 		// Id 
 		if (this.id == null) 
 		{
@@ -145,13 +164,13 @@ public class BaseEntity implements Serializable {
 			if (this.id.compareTo(bo.id) != 0)
 				return false;
 		}
-
-		// We made it!!!  Objects are equal!!
+*/
+		// We made it!!!  Base Objects are equal (id's both null or both equal non-null values)!!
+		// Concrete objects will have to look 
 		return true;
 		
 	}  // end equals(Object)
 
-			
 	/**
 	 * Calculates the object's hash code.
 	 * 

@@ -56,11 +56,13 @@
               <tr>
                 <th>Visit Date</th>
                 <th>Description</th>
+                <th></th>
               </tr>
             </thead>
             <tr th:each="visit : ${pet.visits}">
               <td th:text="${#temporals.format(visit.date, 'yyyy-MM-dd')}"></td>
               <td th:text="${visit?.description}"></td>
+              <td> <a th:href="@{{ownerId}/pets/{petId}/visits/{visitId}/update(ownerId=${owner.id},petId=${pet.id},visitId=${visit.id})}">Update Visit</a></td>
             </tr>
             <tr>
               <td><a

@@ -27,7 +27,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,7 +34,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @NoArgsConstructor   // Lombok 
-@AllArgsConstructor	 // Lombok
 @Getter				 // Lombok
 @Setter              // Lombok
 @Entity 		// Identify as JPA entity for DB  
@@ -112,6 +110,8 @@ public class Pet extends BaseEntity {
 	 * @param owner Owner of pet
 	 * @param birthDate Pet data of birth
   */	 
+	@Builder // Don't include id.  It is generated.  Set with setter.  If Spring, will inject with setter. 
+	         // Don't allow visits because bidirectional and need "pet.add(visit)" to make sure pet gets set as add each visit. 
 	public Pet (String name, PetType petType, Owner owner, LocalDate birthDate) {
 		super();
 		this.name = name;
@@ -131,12 +131,48 @@ public class Pet extends BaseEntity {
 	 * @return true if added; false otherwise. 
 	 */
 	public boolean add(Visit visit) {
-		if (visit == null)
+
+		System.out.println("All visits for pet ");
+		for (Visit v : this.visits) {
+			if 	(v.isNew()) {
+				System.out.println("New null id");
+				System.out.println("Visit desc " + v.getDescription());
+				System.out.println("Visit date " + v.getDate());
+			}
+			else { 
+				System.out.println ("Visit id = " + v.getId());
+				System.out.println("Visit desc " + v.getDescription());
+				System.out.println("Visit date " + v.getDate());
+			}
+		}
+		
+		if (this.visits.contains(visit))
+			System.out.println("In Pet:addVisit - - Contains visit already!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		else 
+			System.out.println("In Pet:addVisit - - DOES NOT contain visit yet !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+		System.out.println("Does contains call equals?????????????????????????????????");
+		if (this.visits.contains(visit))
+			System.out.println("CONTAINS");
+		else 
+			System.out.println("NOPE");
+			
+		if ((visit == null) || (this.visits.contains(visit)) )
 			return false;
+		// Visit to be added
+		System.out.println("Visit id " + visit.getId());
+		System.out.println("Visit desc " + visit.getDescription());
+		System.out.println("Visit date " + visit.getDate());
+
 		
 		// Request to add the Visit.  If the visit already exists in the Set (equals() returns true)
-		// visit will not be added (returns false).  Otherwise, set the visit's pet attribute; return true.
+		// the existing visit will be removed and the current one added.  This handles updates where the 
+		// id's are the same (eqaual returns true), but some values are different. 
+		if (this.visits.contains(visit)) 
+			this.visits.remove(visit);  
+
 		if (this.visits.add(visit)) {
+			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ADDING VISIT to PETS SET OF VISITS");
 			visit.setPet(this);
 			return true;
 		}
@@ -230,9 +266,19 @@ public class Pet extends BaseEntity {
 		
 		Pet po = (Pet)o;
 
-		// Validate instance variables managed by base class.  If not equal, return false.  
+		// Determine if instance variables maintained by base class are equal.  If not, return false.  
 		if (!(super.equals(o)))
 			return false;
+
+		// -----------------------------------------------------
+		// At this point, both 'this' and 'o' are new OR are existing with same id. 
+		// -----------------------------------------------------
+
+		// If same non-null id, equal regardless of remaining since could be update.  
+		if (!this.isNew())
+			return true;
+
+		// Otherwise, both new (null id), compare remaining values. 
 
 		// Name 
 		if (this.name == null) 
@@ -343,6 +389,16 @@ public class Pet extends BaseEntity {
 		final int prime = 17;
 		int result = super.hashCode();
 		
+		// If not new, base hashcode on id only.  For existing (id not null), equals() will return true if id's 
+		// are the same; false otherwise.  Therefore, hashCode must return the same value.  However, updates can 
+		// have same id for two visits (one with updated values, the other with values from DB).   
+		// descriptions. 
+		if (!isNew()) {
+			return result;  // id belongs to base entity - handled by call to super
+		}
+		
+		// For new (id null), include other values. 
+
 		// In this algorithm, based on Joshua Bloch's blog, if an attribute is an 
 		// Object (i.e., String) return 0 if null or call hashCode() on it.
 		// NOTE:  String.hashCode() returns the same int value for strings of the 

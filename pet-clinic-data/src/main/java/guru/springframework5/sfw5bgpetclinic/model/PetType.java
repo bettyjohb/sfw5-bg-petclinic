@@ -16,6 +16,8 @@
 //*************************************************************************** 
 package guru.springframework5.sfw5bgpetclinic.model;
 
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -27,7 +29,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @NoArgsConstructor   // Lombok 
-@AllArgsConstructor	 // Lombok
 @Getter				 // Lombok
 @Setter              // Lombok
 @Entity 		// Identify as JPA entity for DB
@@ -65,19 +66,16 @@ public class PetType extends BaseEntity {
 //		this.name = null;
 //	}
 //
-//	/** 
-//	 * Constructor - Lombok generated @AllArgsConstructor  
-//	 * 
-//	 * Used for constructor injection.  
-//	 * 
-//	 * Do NOT include "id" as parameter.  It is a generated value that 
-//	 * Hibernate will inject with setter.
-//   */	 
-//	public PetType (String name) {
-//		super();
-//		this.name = name;
-//	}  
-
+	/** 
+	 * Constructor - Don't use Lombok generated so do @Builder. 
+	 * Used for constructor injection.  
+	 * Do NOT include "id" as parameter.  It is generated; Hibernate inject with setter.
+     */	 
+	@Builder // ONLY PUT @BUILDER on CHILD class (not parent Person).  I don't pass ID - - generated. 
+	public PetType (String name) {
+		super();
+		this.name = name;
+	}  
 
 // -----------------------------------------------
 // LOMBOK generates @Getters and @Setters 
@@ -132,9 +130,19 @@ public class PetType extends BaseEntity {
 		
 		PetType po = (PetType)o;
 
-		// Validate instance variables managed by base class.  If not equal, return false.  
+		// Determine if instance variables maintained by base class are equal.  If not, return false.  
 		if (!(super.equals(o)))
 			return false;
+
+		// -----------------------------------------------------
+		// At this point, both 'this' and 'vo' are new OR are existing with same id. 
+		// -----------------------------------------------------
+
+		// If same non-null id, equal regardless of remaining since could be update.  
+		if (!this.isNew())
+			return true;
+
+		// Otherwise, both new (null id), compare remaining values. 
 
 		// Name 
 		if (this.name == null) 
@@ -182,6 +190,16 @@ public class PetType extends BaseEntity {
 		final int prime = 17;
 		int result = super.hashCode();
 		
+		// If not new, base hashcode on id only.  For existing (id not null), equals() will return true if id's 
+		// are the same; false otherwise.  Therefore, hashCode must return the same value.  However, updates can 
+		// have same id for two visits (one with updated values, the other with values from DB).   
+		// descriptions. 
+		if (!isNew()) {
+			return result;  // id belongs to base entity - handled by call to super
+		}
+		
+		// For new (id null), include other values. 
+
 		// In this algorithm, based on Joshua Bloch's blog, if an attribute is an 
 		// Object (i.e., String) return 0 if null or call hashCode() on it.
 		// NOTE:  String.hashCode() returns the same int value for strings of the 
@@ -202,10 +220,7 @@ public class PetType extends BaseEntity {
 	 */
 	@Override
 	public String toString() {
-		return "PetType{" +
-               super.toString() + 
-	           "name=" + name + 
-			   "}";
+		return name;
 	}  // end toString()
 
 }  // end class PetType

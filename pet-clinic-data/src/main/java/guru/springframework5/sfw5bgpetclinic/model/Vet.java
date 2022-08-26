@@ -153,10 +153,20 @@ public class Vet extends Person {
 		
 		Vet vo = (Vet)o;
 		
-		// Validate instance variables managed by base class.  If not equal, return false.  
+		// Determine if instance variables maintained by base class are equal.  If not, return false.  
 		if (!(super.equals(o)))
 			return false;
 		
+		// -----------------------------------------------------
+		// At this point, both 'this' and 'vo' are new OR are existing with same id. 
+		// -----------------------------------------------------
+
+		// If same non-null id, equal regardless of remaining since could be update.  
+		if (!this.isNew())
+			return true;
+
+		// Otherwise, both new (null id), compare any other remaining values of interest. 
+
 		// We made it!!!  Objects are equal!!
 		return true;
 		
@@ -183,6 +193,16 @@ public class Vet extends Person {
 		final int prime = 17;
 		int result = super.hashCode();
 		
+		// If not new, base hashcode on id only.  For existing (id not null), equals() will return true if id's 
+		// are the same; false otherwise.  Therefore, hashCode must return the same value.  However, updates can 
+		// have same id for two visits (one with updated values, the other with values from DB).   
+		// descriptions. 
+		if (!isNew()) {
+			return result;  // id belongs to base entity - handled by call to super
+		}
+		
+		// For new (id null), include other values. 
+
 		// In this algorithm, based on Joshua Bloch's blog, if an attribute is an 
 		// Object (i.e., String) return 0 if null or call hashCode() on it.
 		// NOTE:  String.hashCode() returns the same int value for strings of the 
