@@ -90,7 +90,8 @@ class OwnerControllerTest {
 		org.mockito.Mockito.when(ownerService.findAllByLastNameLike(org.mockito.Mockito.anyString()))
 		                                     .thenReturn(expectedOwners);
 		
-		mockMvc.perform(MockMvcRequestBuilders.get("/owners"))
+		mockMvc.perform(MockMvcRequestBuilders.get("/owners")
+				                              .param("lastName", ""))    // TEST WITH BLANK LAST NAME
 			   .andExpect(MockMvcResultMatchers.status().isOk())
 			   .andExpect(MockMvcResultMatchers.view().name("owners/listOwners"))
 			   .andExpect(MockMvcResultMatchers.model().attribute("owners", org.hamcrest.Matchers.hasSize(2)));
