@@ -81,21 +81,23 @@
   </dependencies>
 
     <!-- Package as an executable jar -->
+    <!-- Got error at <executions> if I did not include <pluginManagement> </pluginMangaement> right inside <build></build> -->
+    <!-- Error was "Plugin execution not covered by lifecycle configuration ..." -->
 	<build>
+	<pluginManagement>
 		<plugins>
-			<!-- FROM ORIGINAL PET CLINIC for WRO plugin]--> 
+			<!-- FROM ORIGINAL PET CLINIC for WRO plugin] --> 
 			<plugin>
 			<groupId>ro.isdc.wro4j</groupId>
 			<artifactId>wro4j-maven-plugin</artifactId>
  			<version>${wro4j.version}</version>
-			<executions>
-			<execution>
-			<phase>generate-resources</phase>
-			<?m2e execute onConfiguration,onIncremental?>
-			<goals>
-				<goal>run</goal>
-			</goals>
-			</execution>
+ 			<executions>
+ 				<execution>
+					<phase>generate-resources</phase>
+					<goals>
+						<goal>run</goal>
+					</goals>
+				</execution>
 			</executions>
 			<configuration>
 				<wroManagerFactory>ro.isdc.wro.maven.plugin.manager.factory.ConfigurableWroManagerFactory</wroManagerFactory>
@@ -113,18 +115,12 @@
 				<dependency>
 					<groupId>org.mockito</groupId>
 					<artifactId>mockito-core</artifactId>
-					<version>${mockito.version}</version>
+					<version>2.23.0</version>  
+					<!-- wro4j not updated for Java9 or later, so old Mockito, so hardcode vsn line above - <version>${mockito.version}</version> --> 
 				</dependency>
 			</dependencies>
 			</plugin>
-			<plugin>
-				<!-- Bring in Maven Surefire plugin. Inherits version (current 2.22.2) -->
-				<!-- Maven may bring in older version by default.  -->
-				<!-- DO NOT include <dependency> for JUnit-platform-surefire-provider or compiler warns to use default from this surefire plugin -->
-				<!-- Maven version 3.5.4 has Surefire 2.22.1.  AT THIS POINT, can omit this plugin, but does not hurt so keep in case run with older version -->  
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-			</plugin>
 		</plugins>
+	</pluginManagement>
 	</build>
 </project>

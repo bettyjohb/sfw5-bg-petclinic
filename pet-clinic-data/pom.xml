@@ -7,6 +7,7 @@
   </parent>
   <artifactId>pet-clinic-data</artifactId>
 
+  <!--  Gave cannot find main class.  Was trying to make executable jar (SpringBoot project), but just want simple jar so put this property -->
   <properties>
   	<spring-boot.repackage.skip>true</spring-boot.repackage.skip>
   </properties>
@@ -57,14 +58,6 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<!-- Bring in Maven Surefire plugin. Inherits version (current 2.22.2) -->
-				<!-- DO NOT include <dependency> for JUnit-platform-surefire-provider or compiler warns to use default from this surefire plugin -->
-				<!-- May not need this! -->
-				<!-- Maven version 3.5.4 has Surefire 2.22.1.  AT THIS POINT, can omit this plugin, but does not hurt so keep in case run with older version -->
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>   
 			</plugin>
 		</plugins>
 	</build>  
