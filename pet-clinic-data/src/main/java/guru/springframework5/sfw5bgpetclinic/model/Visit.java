@@ -68,15 +68,24 @@ public class Visit extends BaseEntity {
 	private Pet pet;
 		
 	// -----------------------------------------------
-	// Constructors 
+	// Constructors - LOMBOK Don't use @NoArgsConstructor - Want this to provide default date. 
+	//                LOMBOK Don't use @AllArgsConstructor - Don't want id to be specified. 
+	//                This constructor has 4 of the 5 attributes. 
 	// -----------------------------------------------
 
-	// Not LOMBOK - Need custom to get Date/Time
-	@Builder 
-	public Visit() {
-		super();
-		date = LocalDate.now();  // obtain current date from system clock.
-	}
+	/**
+	 * Default constructor - NOT Lombok so can provide default date/time.  
+	 * 
+	 * REMOVED - - Putting @Builder on both a default and parameterized constructor 
+	 * always called default constructor so it never reached code that set the parameters so 
+	 * constructed object that resulted would have null values.  Could not even leave default 
+	 * constructor without @Builder and other with @Builder.     
+	 */
+//	@Builder
+//	public Visit() {
+//		super();
+//		date = LocalDate.now();  // obtain current date from system clock.
+//	}
 
 	/**
 	 * Constructor for Visit class. (Used for constructor injection).
@@ -85,7 +94,7 @@ public class Visit extends BaseEntity {
 	 * It would be generated value that Hibernate will inject with setter.
 	 * Currently not an attribute so moot point.  
 	 * 
-	 * @param date Date Visit created/instantiated
+	 * @param date Date Visit created/instantiated (defaults to current if null)
 	 * @param description Description of visit
 	 * @param pet Pet object being seen
 	 *  
@@ -93,14 +102,26 @@ public class Visit extends BaseEntity {
 	 * @version 1.0
 	 * @since 1.0
 	 */
-	@Builder // Don't include id.  It is generated.  Set with setter.  If Spring, will inject with setter. 
-             // Don't allow visits because bidirectional and need "pet.add(visit)" to make sure pet gets set as add each visit. 
+	@Builder  // builder().a1("x").a2("y").build() calls constructor once w/ a1 and a2 at same time. 
+		      // Don't allow id as a param.  It is generated.  Set with setter.  If Spring, will inject with setter. 
+              // Don't allow visits because bidirectional and need "pet.add(visit)" to make sure pet gets set as add each visit. 
 	public Visit (LocalDate date, String description, Pet pet) {
 		super();
-		this.date = date;
+		System.out.println("In Visit constructor");
+
+		// If date not provided, default to current date.
+		if (date != null)
+			this.date = date;
+		else
+			this.date = LocalDate.now();
+		
 		this.description = description;
-		this.pet = pet;
-		this.pet.add(this);
+		
+		this.setPet(pet);
+//		if (pet != null) {
+	//		this.pet = pet;
+		//	this.pet.add(this);
+		//}
 	}
 
 	// -----------------------------------------------
@@ -140,7 +161,7 @@ public class Visit extends BaseEntity {
 //	}
 //	
 	public void setPet(Pet pet) {
-		if ( (this.pet == null) || !(this.pet.equals(pet)) ) {
+		if ( (pet != null) && ((this.pet == null) || !(this.pet.equals(pet))) ) {
 			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! SETTING VISITS PET ATTRIBUTE TO PET");
 			this.pet = pet;
 			this.pet.add(this);

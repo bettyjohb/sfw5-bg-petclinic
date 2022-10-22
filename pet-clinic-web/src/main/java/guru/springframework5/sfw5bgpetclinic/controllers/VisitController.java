@@ -86,10 +86,13 @@ public class VisitController {
 	// Omit @PathVariable String petId from method params due to @ModelAttribute("pet") above.
 	@GetMapping("/visits/new")    // pets/petId at class level
 	public String initCreateVisitForm(Model model) throws Exception {
-		
+
 		// Create an empty Visit and add it to the Model for the create view. 
 		// The Pet being scheduled is in the Model from @ModelAttribute methods above.
 		Visit visit = Visit.builder().build();
+
+		if (model.getAttribute("pet") == null)
+			System.out.println("PET WAS NOT SET UP !!!!!!!!!!!!!!!!!!!!! \n\n\n");
 		((Pet)model.getAttribute("pet")).add(visit);  // Adds visit to pet (which sets pet attribute of visit)  
 		                                              // Not saved to DB yet, so will reset on submit.
 													  // Remaining visit attributes filled out in form.
@@ -134,20 +137,26 @@ public class VisitController {
 	// Controller method to display create/update form to update existing visit data.  Uses existing Visit.
 	// Omit @PathVariable String petId from method params due to @ModelAttribute("pet") above.
 	@GetMapping("/visits/{visitId}/update")    // owners/ownerId/pets/petId at class level
-	public String initUpdatePetForm(@PathVariable Long visitId, Model model) throws Exception {
+	public String initUpdateVisitForm(@PathVariable Long visitId, Model model) throws Exception {
 		
-  	// Invoke VisitService to retrieve Visit to be updated (noted by visitId) - Place in Model for update view. 
-  	// Therefore, Visit is all intact (including id and Pet reference) since from DB. 
+		System.out.println("INSIDE INIT UPDATE VISIT FORM &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& ]n]n]n ");
+		// Invoke VisitService to retrieve Visit to be updated (noted by visitId) - Place in Model for update view. 
+    	// Therefore, Visit is all intact (including id and Pet reference) since from DB. 
 		// In addition, the Pet is in the Model from @ModelAttribute methods above.
 		Visit visit = visitService.findById(visitId);
+		System.out.println("Got visit id = " + visit.getId() + "   INSIDE INIT UPDATE VISIT FORM &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& ]n]n]n ");
+		    
 		model.addAttribute("visit", visit);
+
+		System.out.println("Added visit to model.");
+		
 		return "/pets/createOrUpdateVisit";
 	}
 
 	// Controller method to process create/update form submit to save updated Visit data.    
 	// Omit @PathVariable String petId from method params due to @ModelAttribute("pet") above.
 	@PostMapping("/visits/{visitId}/update")    // owners/ownerId/pets/petId at class level
-	public String processUpdatePetForm(@PathVariable Long visitId, @Validated Visit visit, BindingResult bindingResult, Model model) throws Exception {
+	public String processUpdateVisitForm(@PathVariable Long visitId, @Validated Visit visit, BindingResult bindingResult, Model model) throws Exception {
   	    // InitBinder above prevents from prepopulating ID when passed from form.  Set it from param here. 
   	    visit.setId(Long.valueOf(visitId));
 

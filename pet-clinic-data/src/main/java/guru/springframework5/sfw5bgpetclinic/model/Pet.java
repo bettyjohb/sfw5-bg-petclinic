@@ -19,6 +19,7 @@ package guru.springframework5.sfw5bgpetclinic.model;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.jar.Attributes;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -86,21 +87,21 @@ public class Pet extends BaseEntity {
 	//                Uncommented constructor has 4 of the 5 attributes. 
 	// -----------------------------------------------
 
-//	/**
-//	 * Default constructor (required of JPA entity objects)
-//	 */
+	
+	/**
+	 * Removed default constructor.  Putting @Build on default and parameterized constructor 
+	 * always called default constructor so never reached code that set the parameters and 
+	 * constructed object would have null values.  Could not even leave default contructor 
+	 * without @Builder and other with @Builder.     
+	 */
 //	public Pet() {
 //		super();
-//		this.name = null; 
-//		this.petType = null;
-//		this.owner = null;
-//		this.birthDate = null;
 //	}
 
 	/** 
 	 * Constructor   
 	 * 
-	 * #4 - Used for constructor injection.  
+	 * #4 - Used for constructor injection and @Builder.  
 	 * 
 	 * Do NOT include "id" as parameter.  It is a generated value that 
 	 * Hibernate will inject with setter.
@@ -110,8 +111,9 @@ public class Pet extends BaseEntity {
 	 * @param owner Owner of pet
 	 * @param birthDate Pet data of birth
   */	 
-	@Builder // Don't include id.  It is generated.  Set with setter.  If Spring, will inject with setter. 
-	         // Don't allow visits because bidirectional and need "pet.add(visit)" to make sure pet gets set as add each visit. 
+	@Builder  // builder().a1("x").a2("y").build() calls constructor once w/ a1 and a2 at same time. 
+			  // Don't include id.  It is generated.  Set with setter.  If Spring, will inject with setter. 
+	          // Don't allow visits because bidirectional and need "pet.add(visit)" to make sure pet gets set as add each visit. 
 	public Pet (String name, PetType petType, Owner owner, LocalDate birthDate) {
 		super();
 		this.name = name;
@@ -134,16 +136,14 @@ public class Pet extends BaseEntity {
 
 		System.out.println("All visits for pet ");
 		for (Visit v : this.visits) {
-			if 	(v.isNew()) {
+			if 	(v.isNew()) 
 				System.out.println("New null id");
-				System.out.println("Visit desc " + v.getDescription());
-				System.out.println("Visit date " + v.getDate());
-			}
-			else { 
+			else  
 				System.out.println ("Visit id = " + v.getId());
-				System.out.println("Visit desc " + v.getDescription());
-				System.out.println("Visit date " + v.getDate());
-			}
+			
+			System.out.println("Visit desc " + v.getDescription());
+			System.out.println("Visit date " + v.getDate());
+
 		}
 		
 		if (this.visits.contains(visit))
@@ -433,7 +433,7 @@ public class Pet extends BaseEntity {
 			else 
 				strVisits = strVisits.concat(visit.getDescription());
 		}
-
+	
 		return "Pet{" +
 	           super.toString() + 
 	           "name=" + name +
