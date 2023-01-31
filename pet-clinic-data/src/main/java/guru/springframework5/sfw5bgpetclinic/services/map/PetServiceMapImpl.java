@@ -95,8 +95,9 @@ public class PetServiceMapImpl extends AbstractMapService<Pet, Long> implements 
 	// -------------------------------------------------------
 	
 	/**
-	 * Save a given entity.  Use the returned instance for further operations as the save operation 
-	 * might have changed the entity instance completely.
+	 * Save a given entity.  If Pet's id is null, generates id and adds as new Pet.  Otherwise, 
+	 * treats as an updated.  Use the returned instance for further operations as the save operation 
+	 * might have changed the entity instance completely (particularly newly generated id).
 	 * @param non-null object
 	 * @return the saved entity (never null) 
 	 */
@@ -114,7 +115,11 @@ public class PetServiceMapImpl extends AbstractMapService<Pet, Long> implements 
 				// If new PetType, save it. 
 				// PetTypeServiceMapImpl will take care of generating an ID for PetType if new.
 				if (pet.getPetType().getId() == null)
-					pet.setPetType( petTypeService.save(pet.getPetType()) );  
+					pet.setPetType( petTypeService.save(pet.getPetType()) );
+				
+				// If new Owner, throw exception.  Only existing Owner can save a Pet.  
+				if (pet.getOwner().getId() == null)
+					throw new java.lang.RuntimeException("Pet must have an exising Owner with valid ID.");
 			} else {
 				throw new java.lang.RuntimeException("Pet must have a PetType.");
 			}

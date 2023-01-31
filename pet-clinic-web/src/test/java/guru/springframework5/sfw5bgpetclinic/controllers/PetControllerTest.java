@@ -2,6 +2,7 @@ package guru.springframework5.sfw5bgpetclinic.controllers;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 
 import org.junit.jupiter.api.BeforeEach;

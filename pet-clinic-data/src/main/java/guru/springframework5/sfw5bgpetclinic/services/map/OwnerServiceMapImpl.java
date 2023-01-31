@@ -148,11 +148,11 @@ public class OwnerServiceMapImpl extends AbstractMapService<Owner, Long> impleme
 					}
 				});
 			}  // end if 1+ pets to save
-			
+
 			// AbstractMapService level of OwnerServiceMapImpl owns HashMap of Owners and adds/updates Owner objects.
 			return super.save(owner);  
 		} else {
-			// Owner was null.  Nothing saved. 
+			// Owner was null.  Nothing saved.
 			return null;
 		}
 		

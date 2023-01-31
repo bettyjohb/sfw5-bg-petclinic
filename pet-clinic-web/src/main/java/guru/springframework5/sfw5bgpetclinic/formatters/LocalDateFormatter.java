@@ -26,7 +26,9 @@ public class LocalDateFormatter implements Formatter<LocalDate> {
 		
 		LocalDate localDate;
 		try { 
-			localDate = LocalDate.parse(date);
+			// ISO_LOCAL_DATE = international standard that represents date as format yyyy-mm-dd
+			// This code was working w/o this, but added because in some places will be dd-mm-yyyy, etc.  
+			localDate = LocalDate.parse(date, java.time.format.DateTimeFormatter.ISO_LOCAL_DATE);
 		} catch (DateTimeParseException e) {
 			throw new ParseException("Unable to parse date: " + date, 0);
 		}

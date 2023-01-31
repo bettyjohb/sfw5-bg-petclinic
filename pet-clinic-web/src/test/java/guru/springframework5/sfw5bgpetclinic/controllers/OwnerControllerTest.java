@@ -21,9 +21,12 @@ import guru.springframework5.sfw5bgpetclinic.services.OwnerService;
 //Use Mockito MVC to do "mock" injection of OwnerService into OwnerController
 //  AND to provide fake data (absent DB) for OwnerService to return,
 //  AND provide "mock" dispatcher servlet.  
+//WITHOUT THIS, SERVICES ARE NOT MOCKED AND, THEREFORE, NOT INJECTED IN CLASSES THAT NEED THEM.  
+//WITHOUT THIS, SERVICES ARE NULL. 
 @ExtendWith(MockitoExtension.class)  // Init Mockito. [JUnit 4 used Runners; 5 uses extensions]
 class OwnerControllerTest {
 
+	
 	// -------------------------------------
 	// Test Data 
 	// -------------------------------------

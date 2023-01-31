@@ -124,6 +124,8 @@ class VisitControllerTest {
 
 	@Test
 	// Test controller method to process a create/update form submit to save new visit data.  
+	// Dates are passed as String and formatted by LocalDateFormatter in formatters pkg before put in Visit 
+	// (called automagically by spring)
 	void testProcessCreateVisitForm() throws Exception { 
 		System.out.println("\n\nIn VisitControllerTest::testProcessCreateVisitForm()!");
 		// Tell Mockito to return dummy Visit when VisitService save is called.  This is not called directly 
@@ -172,7 +174,9 @@ class VisitControllerTest {
 	}
 
 	@Test
-	// Test co9ntroller method to process create/update form submit to save updated Visit data.  
+	// Test controller method to process create/update form submit to save updated Visit data.
+	// Dates are passed as String and formatted by LocalDateFormatter in formatters pkg before put in Visit 
+	// (called automagically by spring)
 	void testProcessUpdateVisitForm() throws Exception { 
 		System.out.println("\n\nIn VisitControllerTest::testProcessUpdateVisitForm()!");
 

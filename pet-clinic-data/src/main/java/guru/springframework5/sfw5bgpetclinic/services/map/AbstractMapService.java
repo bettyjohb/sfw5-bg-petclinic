@@ -68,20 +68,27 @@ public abstract class AbstractMapService<T extends BaseEntity, ID extends Long> 
 	// Create / Update
 
 	/**
-	 * Save a given entity.  If id of object is null, generate and create new object; otherwise update existing. 
-	 * Calling source should use the returned instance for further operations as the save operation might have 
-	 * changed the entity instance completely.
+	 * Save given entity.  If id of object is null, generate and create new object; otherwise update existing
+	 * (if found).  Calling source should use returned instance for further operations as save operation might  
+	 * have changed the entity instance completely.
 	 *  
 	 * @param non-null object (BaseEntity or extension so has getId()
 	 * @return the saved entity (never null) 
 	 */
 	T save (T object) {
 		// Check for an id.  If none, generate. 
-		if (object != null) {               
-			if (object.getId() == null)  {   
+		if (object != null) {    
+			Long id = object.getId();
+			if (id == null)  {   
 				object.setId(getNextId());  // No ID, so generate ID - creating new object
+			} else {
+				// Existing Pet (id not null).  Verify it is in the Map; otherwise not found. 
+				if (map.get(id) == null)
+					throw new RuntimeException("Object not found for update.");
 			}
-			// If no object with that key yet, will add.  If existing key (id), will replace with new object.  Returns ref to prev obj a/w key so ignore.
+			
+			// If no object with that key yet, will add.  If existing key (id), will replace with new object.  
+			// Returns ref to prev obj a/w key so ignore.
 			map.put(object.getId(), object);
 		} else {
 			throw new RuntimeException("Object cannot be null");
