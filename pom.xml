@@ -1,18 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.3.8.RELEASE</version>
-		<relativePath /> <!-- lookup parent from repository -->
-	</parent>
+
 	<groupId>guru.springframework5</groupId>
 	<artifactId>sfw5-bg-petclinic</artifactId>
 	<version>0.0.3-SNAPSHOT</version>
+
+	<modules>
+		<module>pet-clinic-data</module>
+		<module>pet-clinic-web</module>
+	</modules>
+
 	<packaging>pom</packaging>
+
 	<name>sfw5-bg-petclinic</name>
 	<description>SFW5 Version of Spring Petclinic</description>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.2.0.RELEASE</version> 
+		<!-- COURSE USED 2.1.0.RELEASE ??? -->
+		<!-- HOWEVER, version 2.1.0.RELEASE includes Spring Framework 5.1, but Model.getAttribute is in Spring Framework 5.2 so I use 2.2.0.RELEASE -->
+		<relativePath /> <!-- lookup parent from repository -->
+	</parent>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -21,26 +33,26 @@
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 	</properties>
-	
+
 	<!-- Jaxb needed since Java 9.  Java 9 removed from std libraries, but Hibernate requires XML tools so must include as dependency. -->
-	<!-- To do this, need to alsdo have <jaxb version> above. -->
-   <dependencies>
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>${jaxb.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-core</artifactId>
-            <version>${jaxb.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
-            <version>${jaxb.version}</version>
-        </dependency>
-    </dependencies>
+	<!-- To do this, need to also have <jaxb version> above. -->
+	<dependencies>
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>${jaxb.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-core</artifactId>
+			<version>${jaxb.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-impl</artifactId>
+			<version>${jaxb.version}</version>
+		</dependency>
+	</dependencies>
     
 	<build>
 		<plugins>
@@ -64,23 +76,27 @@
 				<!-- Maven version 3.5.4 has Surefire 2.22.1.  AT THIS POINT, can omit this plugin, but does not hurt so keep in case run with older version -->
 				<!-- Using 2.22.1 and higher includes JUnit 5 -->
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>  
-				<version>2.22.2</version> 
+				<artifactId>maven-surefire-plugin</artifactId>
+				<!-- Was including 2.22.2 -->  
+				<version>2.22.0</version> 
+                <configuration>
+                    <argLine>
+                        --illegal-access=permit
+                    </argLine>
+                </configuration>
 			</plugin>
+
 			<!-- Failsafe plugin for integration tests - any test ending in "IT" -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>2.22.2</version>
-				<configuration>
-					<includes>
-						<include>**/*IT.java</include>
-					</includes>
-					<additionalClasspathElements>
-						<additionalClasspathElement>${basedir}/target/classes</additionalClasspathElement>
-					</additionalClasspathElements>
-					<parallel>none</parallel>
-				</configuration>
+				<!--  WAS 2.22.2 -->
+				<version>2.22.0</version>
+                <configuration>
+                    <argLine>
+                        --illegal-access=permit
+                    </argLine>
+                </configuration>
 				<executions>
 					<execution>
 						<goals>	
@@ -93,13 +109,9 @@
 		</plugins>
 	</build>
 
-  	<scm>
+ 	<scm>
   		<developerConnection>scm:git:git@github.com:bettyjohb/sfw5-bg-petclinic.git</developerConnection>
-      <tag>HEAD</tag>
-  </scm>
-  	
-	<modules>
-		<module>pet-clinic-data</module>
-		<module>pet-clinic-web</module>
-	</modules>
+		<tag>HEAD</tag>
+	</scm>
+
 </project>

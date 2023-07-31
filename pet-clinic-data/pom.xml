@@ -1,56 +1,80 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>guru.springframework5</groupId>
-    <artifactId>sfw5-bg-petclinic</artifactId>
-	<version>0.0.3-SNAPSHOT</version>
-  </parent>
-  <artifactId>pet-clinic-data</artifactId>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-  <!--  Gave cannot find main class.  Was trying to make executable jar (SpringBoot project), but just want simple jar so put this property -->
-  <properties>
-  	<spring-boot.repackage.skip>true</spring-boot.repackage.skip>
-  </properties>
-  
-  <dependencies>
-	<dependency>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-data-jpa</artifactId>
-	</dependency>
-	<dependency>
-		<groupId>com.h2database</groupId>
-		<artifactId>h2</artifactId>
-		<scope>runtime</scope>
-	</dependency>
-	<dependency>
-		<groupId>mysql</groupId>
-		<artifactId>mysql-connector-java</artifactId>
-		<scope>runtime</scope>
-	</dependency>
-	<dependency>
-		<groupId>org.projectlombok</groupId>
-		<artifactId>lombok</artifactId>
-		<optional>true</optional>
-	</dependency>
-	<!-- TESTING with JUNIT (Spring Boot 2.2.0+ brings in JUnit 5 + Mockito, Spring Mock MVC test, etc.) -->
-	<!-- JUnit 5 comes with JUnit Platform, JUnit Jupiter for JUnit 5, and JUnit Vintage if old tests (exclude if not) -->
-	<!-- IF EARLIER SPRING BOOT (pre-2.2.0), need to <exclusion>junit (so removes default JUnit4) then include -->
-	<!-- <dependency> for juit-jupiter-api, junit-jupiter-engine, mockito-junit-jupiter.   -->
-	<!-- Again, our Spring Boot version gives by default so don't need to specify. -->
-	<dependency>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-test</artifactId>
-		<scope>test</scope>
-		<exclusions>
-			<!-- Without this get error - "TestEngine with ID 'junit-vintage' failed to discover tests." -->
-			<exclusion>
-				<groupId>org.junit.vintage</groupId>
-				<artifactId>junit-vintage-engine</artifactId>
-			</exclusion>
-		</exclusions>
-	</dependency>
-  </dependencies>
-  
+	<parent>
+		<groupId>guru.springframework5</groupId>
+		<artifactId>sfw5-bg-petclinic</artifactId>
+		<version>0.0.3-SNAPSHOT</version>
+	</parent>
+
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>pet-clinic-data</artifactId>
+	
+	<!--  Gave cannot find main class.  Was trying to make executable jar (SpringBoot project), but just want simple jar so put this property -->
+	<properties>
+		<spring-boot.repackage.skip>true</spring-boot.repackage.skip>
+	</properties>
+	
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+
+		<!-- TESTING with JUNIT (Spring Boot 2.2.0+ brings in JUnit 5 + Mockito, Spring Mock MVC test, etc.) -->
+		<!-- JUnit 5 comes with JUnit Platform, JUnit Jupiter for JUnit 5, and JUnit Vintage if old tests (exclude if not) -->
+		<!-- IF EARLIER SPRING BOOT (pre-2.2.0), need to <exclusion>junit (so removes default JUnit4) then include -->
+		<!-- <dependency> for juit-jupiter-api, junit-jupiter-engine, mockito-junit-jupiter.   -->
+		<!-- Again, our Spring Boot version gives by default so don't need to specify. -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+			<exclusions>
+				<!-- Without this get error - "TestEngine with ID 'junit-vintage' failed to discover tests." -->
+				<exclusion>
+					<groupId>junit</groupId>
+					<artifactId>junit</artifactId>
+					<!-- WAS group id - org.junit.vintage -->
+					<!-- WAS artifact id - junit-vintage-engine -->
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- When pre 2.2.0 Spring Boot - need to exclude junit (default Junit4 above) then include jupiter for JUIT5  -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-junit-jupiter</artifactId>
+			<version>2.22.0</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
     <!-- Package as an executable jar -->
 	<build>
 		<plugins>
@@ -58,6 +82,13 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<executions>
+					<execution>
+					<goals>
+						<goal>repackage</goal>
+					</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>  

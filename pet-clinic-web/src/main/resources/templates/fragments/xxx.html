@@ -27,7 +27,7 @@
       <div class="container">
           <div class="navbar-header">
               <a class="navbar-brand" th:href="@{/}"><span></span></a>
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+              <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#main-navbar">
                   <span class="sr-only"><os-p>Toggle navigation</os-p></span>
                   <span class="icon-bar"></span>
                   <span class="icon-bar"></span>
@@ -46,22 +46,22 @@
   
                   <li th:replace="::menuItem ('/','home','home page','home','Home')">
                       <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
-                      <span>Home</span>
+                      <span>Home - XYZ</span>
                   </li>
   
                   <li th:replace="::menuItem ('/owners/find','owners','find owners','search','Find owners now')">
                       <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                      <span>Find owners</span>
+                      <span>Find owners - XYZ</span>
                   </li>
   
                   <li th:replace="::menuItem ('/vets.html','vets','veterinarians','th-list','Veterinarians')">
                       <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-                      <span>Veterinarians</span>
+                      <span>Veterinarians - XYZ</span>
                   </li>
   
                   <li th:replace="::menuItem ('/oups','error','trigger a RuntimeException to see how it is handled','warning-sign','Error')">
                       <span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span>
-                      <span>Error</span>
+                      <span>Error - XYZ</span>
                   </li>
   
               </ul>
@@ -70,7 +70,7 @@
   </nav>
   <div class="container-fluid">
       <div class="container xd-container">
-  		  <!-- The body element of the page that references layout with be included here (i.e., index html pg). -->
+  
           <th:block th:include="${template}"/>
 
         <br/>

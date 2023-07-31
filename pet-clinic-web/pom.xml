@@ -1,126 +1,227 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>guru.springframework5</groupId>
-    <artifactId>sfw5-bg-petclinic</artifactId>
-	<version>0.0.3-SNAPSHOT</version>
-  </parent>
-  <artifactId>pet-clinic-web</artifactId>
-
-  <properties>
-    <!-- Web dependencies - FROM ORIGINAL PET CLINIC  -->
-    <webjars-bootstrap.version>3.3.6</webjars-bootstrap.version>
-    <webjars-jquery-ui.version>1.11.4</webjars-jquery-ui.version>
-    <webjars-jquery.version>2.2.4</webjars-jquery.version>
-    <wro4j.version>1.8.0</wro4j.version>
-  </properties>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   
-  <dependencies>
-    <dependency>
-	    <groupId>guru.springframework5</groupId>
-		<artifactId>pet-clinic-data</artifactId>
-	    <version>0.0.3-SNAPSHOT</version>
-    </dependency>
-	<dependency>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-actuator</artifactId>
-	</dependency>
-	<dependency>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-thymeleaf</artifactId>
-	</dependency>
-	<dependency>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-web</artifactId>
-	</dependency>
-	<dependency>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-devtools</artifactId>
-		<scope>runtime</scope>
-		<optional>true</optional>
-	</dependency>
-    <!-- webjars FROM ORIGINAL PET CLINIC -->
- 	<dependency>
-		<groupId>org.webjars</groupId>
-		<artifactId>webjars-locator-core</artifactId>
-	</dependency>
-	<dependency>
-		<groupId>org.webjars</groupId>
-		<artifactId>jquery</artifactId>
-		<version>${webjars-jquery.version}</version>
-	</dependency>
-	<dependency>
-		<groupId>org.webjars</groupId>
-		<artifactId>jquery-ui</artifactId>
-		<version>${webjars-jquery-ui.version}</version>
-	</dependency>
-	<dependency>
-		<groupId>org.webjars</groupId>
-		<artifactId>bootstrap</artifactId>
-		<version>${webjars-bootstrap.version}</version>
-	</dependency>
-	<!-- end webjars -->
-	
-	<!-- TESTING with JUNIT (Spring Boot 2.2.0+ brings in JUnit 5 + Mockito, Spring Mock MVC test, etc.) -->
-	<!-- JUnit 5 comes with JUnit Platform, JUnit Jupiter for JUnit 5, and JUnit Vintage if old tests (exclude if not) -->
-	<!-- IF EARLIER SPRING BOOT (pre-2.2.0), need to <exclusion>junit (so removes default JUnit4) then include -->
-	<!-- <dependency> for juit-jupiter-api, junit-jupiter-engine, mockito-junit-jupiter.   -->
-	<!-- Again, our Spring Boot version gives by default so don't need to specify. -->
-	<dependency>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-test</artifactId>
-		<scope>test</scope>
-		<exclusions>
-			<!-- Without this get error - "TestEngine with ID 'junit-vintage' failed to discover tests." -->
-			<exclusion>
-				<groupId>org.junit.vintage</groupId>
-				<artifactId>junit-vintage-engine</artifactId>
-			</exclusion>
-		</exclusions>
-	</dependency>
-  </dependencies>
+	<parent>
+		<groupId>guru.springframework5</groupId>
+  		<artifactId>sfw5-bg-petclinic</artifactId>
+		<version>0.0.3-SNAPSHOT</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>  
+	<artifactId>pet-clinic-web</artifactId>
+
+	<properties>
+		<!-- Web dependencies - FROM ORIGINAL PET CLINIC - Defines version for dependencies below -->
+		<webjars-bootstrap.version>3.3.6</webjars-bootstrap.version>
+		<webjars-jquery-ui.version>1.11.4</webjars-jquery-ui.version>
+		<webjars-jquery.version>2.2.4</webjars-jquery.version>
+		<wro4j.version>1.8.0</wro4j.version>
+		<!-- <thymeleaf.version>3.0.11.RELEASE</thymeleaf.version> -->
+		<!-- thymeleaf was not in course pom - ??? -->
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>guru.springframework5</groupId>
+			<artifactId>pet-clinic-data</artifactId>
+			<version>0.0.3-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+			<!-- NOT IN COURSE POM ??? <version>2.1.0.RELEASE</version> -->
+		</dependency>
+		<!-- COURSE POM DID NOT HAVE ???
+		<dependency>
+			<groupId>org.thymeleaf.extras</groupId>
+			<artifactId>thymeleaf-extras-java8time</artifactId>
+			<version>3.0.1.RELEASE</version>
+		</dependency>
+		-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- webjars FROM ORIGINAL PET CLINIC -->
+ 		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>webjars-locator-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>jquery</artifactId>
+			<version>${webjars-jquery.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>jquery-ui</artifactId>
+			<version>${webjars-jquery-ui.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>bootstrap</artifactId>
+			<version>${webjars-bootstrap.version}</version>
+		</dependency>
+		<!-- end webjars -->
+
+		<!-- TESTING with JUNIT (Spring Boot 2.2.0+ brings in JUnit 5 + Mockito, Spring Mock MVC test, etc.) -->
+		<!-- JUnit 5 comes with JUnit Platform, JUnit Jupiter for JUnit 5, and JUnit Vintage if old tests (exclude if not) -->
+		<!-- IF EARLIER SPRING BOOT (pre-2.2.0), need to <exclusion>junit (so removes default JUnit4) then include -->
+		<!-- <dependency> for juit-jupiter-api, junit-jupiter-engine, mockito-junit-jupiter.   -->
+		<!-- Again, our Spring Boot version gives by default so don't need to specify. -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+			<exclusions>
+			
+				<exclusion>
+				    <!-- WENT BACK TO PRE-SPRING BOOT 2.2.0 so need to manually remove JUNIT4 and include JUPITER (NEXT DEPENDENCY) -->
+					<groupId>junit</groupId>
+					<artifactId>junit</artifactId>
+					<!-- Without this get error - "TestEngine with ID 'junit-vintage' failed to discover tests." -->
+					<!-- WAS THIS NOT JUNIT - - - TAG groupId >org.junit.vintage /ENDTAGgroupId --> 
+					<!-- TAG artifactId> junit-vintage-engine END TAG artifactId -->
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+		<!-- WENT BACK TO PRE-SPRING BOOT 2.2.0 so need to manually include jupiter for JUNIT5  -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-junit-jupiter</artifactId>
+			<version>2.22.0</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 
     <!-- Package as an executable jar -->
     <!-- Got error at <executions> if I did not include <pluginManagement> </pluginMangaement> right inside <build></build> -->
     <!-- Error was "Plugin execution not covered by lifecycle configuration ..." -->
 	<build>
+	<!--  plugin mangement tag required by eclipe.  Otherwise was getting "plugin execution not covered by lifecycle configuration error  -->
+	<!--  course pom did not use it because using another IDE. -->
 	<pluginManagement>
+
 		<plugins>
-			<!-- FROM ORIGINAL PET CLINIC for WRO plugin] --> 
+			<!-- FROM ORIGINAL PET CLINIC for WRO plugin] so can generate CSS stylesheet for fragments --> 
+
+			<!-- Try Fix -->
+			<!-- This plugin's configuration is used to store Eclipse m2e settings only.  
+			     It has no influence on the Maven build itself. -->
 			<plugin>
-			<groupId>ro.isdc.wro4j</groupId>
-			<artifactId>wro4j-maven-plugin</artifactId>
- 			<version>${wro4j.version}</version>
+				<groupId>org.eclipse.m2e</groupId>
+				<artifactId>lifecycle-mapping</artifactId>
+				<version>1.0.0</version>
+				<configuration>
+					<lifecycleMappingMetadata>
+						<pluginExecutions>
+							<pluginExecution>
+							<pluginExecutionFilter>
+								<groupId>org.apache.felix</groupId>
+								<artifactId>maven-bundle-plugin</artifactId>
+								<versionRange>[1.0.0,)</versionRange>
+								<goals><goal>manifest</goal></goals>
+							</pluginExecutionFilter>
+							<action><execute /></action>
+							</pluginExecution>
+						</pluginExecutions>
+					</lifecycleMappingMetadata>
+				</configuration>
+			</plugin>
+ 	
+ 		<plugin>
+ 			<artifactId>maven-compiler-plugin</artifactId>
+ 			<version>2.3.2</version>
+ 			<configuration>
+ 				<source>1.6</source>
+ 				<target>1.6</target>
+ 				<encoding>UTF-8</encoding>
+ 			</configuration>
+ 		</plugin>
+ 		
+ 		<plugin>
+ 			<groupId>org.apache.felix</groupId>
+ 			<artifactId>maven-bundle-plugin</artifactId>
+ 			<version>2.3.7</version>
+ 			<extensions>true</extensions>
+ 			<configuration>
+ 			 	<instructions>
+ 			 	</instructions>
+ 			</configuration>
  			<executions>
  				<execution>
+ 					<id>manifest</id>
+ 					<phase>process-classes</phase>
+ 					<goals><goal>manifest</goal></goals>
+ 				</execution>
+ 			</executions>
+ 		</plugin>
+ 	<!-- Try Fix end -->
+ 	
+		<plugin>
+				<groupId>ro.isdc.wro4j</groupId>
+				<artifactId>wro4j-maven-plugin</artifactId>
+				<version>${wro4j.version}</version>
+				<executions>
+					<execution>
+					<!-- Test fix manifest -->
+					<id>manifest</id>
 					<phase>generate-resources</phase>
-					<goals>
-						<goal>run</goal>
-					</goals>
-				</execution>
-			</executions>
-			<configuration>
-				<wroManagerFactory>ro.isdc.wro.maven.plugin.manager.factory.ConfigurableWroManagerFactory</wroManagerFactory>
-				<cssDestinationFolder>${project.build.directory}/classes/static/resources/css</cssDestinationFolder>
-				<wroFile>${basedir}/src/main/wro/wro.xml</wroFile>
-				<extraConfigFile>${basedir}/src/main/wro/wro.properties</extraConfigFile>
-				<contextFolder>${basedir}/src/main/less</contextFolder>
-			</configuration>
-			<dependencies>
-				<dependency>
-					<groupId>org.webjars</groupId>
-					<artifactId>bootstrap</artifactId>
-					<version>${webjars-bootstrap.version}</version>
-				</dependency>
-				<dependency>
-					<groupId>org.mockito</groupId>
-					<artifactId>mockito-core</artifactId>
-					<version>2.23.0</version>  
-					<!-- wro4j not updated for Java9 or later, so old Mockito, so hardcode vsn line above - <version>${mockito.version}</version> --> 
-				</dependency>
-			</dependencies>
+						<goals>
+							<!-- was run - not manifest -->
+							<goal>manifest</goal>
+						</goals>
+					</execution>
+				</executions>
+				
+				<!-- $basedir is dir where pom is.  In this case pet clinic web pom. -->
+				<!-- $project.build.directory also seems to be where pom is (for web it will be under petclinic web; for data, under data. -->
+				<!--                          Therefore there are 2 classes directories.  -->
+				<configuration>
+					<wroManagerFactory>ro.isdc.wro.maven.plugin.manager.factory.ConfigurableWroManagerFactory</wroManagerFactory>
+					<cssDestinationFolder>${project.build.directory}/classes/static/resources/css</cssDestinationFolder>
+					<wroFile>${basedir}/src/main/wro/wro.xml</wroFile>
+					<extraConfigFile>${basedir}/src/main/wro/wro.properties</extraConfigFile>
+					<contextFolder>${basedir}/src/main/less</contextFolder>
+				</configuration>
+
+				<dependencies>
+					<dependency>
+						<groupId>org.webjars</groupId>
+						<artifactId>bootstrap</artifactId>
+						<version>${webjars-bootstrap.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>org.mockito</groupId>
+						<artifactId>mockito-core</artifactId>
+						<version>2.23.0</version>  
+						<!-- wro4j not updated for Java9 or later, so old Mockito, so hardcode vsn line above - <version>${mockito.version}</version> --> 
+					</dependency>
+				</dependencies>
 			</plugin>
 		</plugins>
-	</pluginManagement>
+
+ 	</pluginManagement>
+		
 	</build>
 </project>
