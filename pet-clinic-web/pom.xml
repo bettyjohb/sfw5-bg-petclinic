@@ -124,72 +124,15 @@
 
 		<plugins>
 			<!-- FROM ORIGINAL PET CLINIC for WRO plugin] so can generate CSS stylesheet for fragments --> 
-
-			<!-- Try Fix -->
-			<!-- This plugin's configuration is used to store Eclipse m2e settings only.  
-			     It has no influence on the Maven build itself. -->
 			<plugin>
-				<groupId>org.eclipse.m2e</groupId>
-				<artifactId>lifecycle-mapping</artifactId>
-				<version>1.0.0</version>
-				<configuration>
-					<lifecycleMappingMetadata>
-						<pluginExecutions>
-							<pluginExecution>
-							<pluginExecutionFilter>
-								<groupId>org.apache.felix</groupId>
-								<artifactId>maven-bundle-plugin</artifactId>
-								<versionRange>[1.0.0,)</versionRange>
-								<goals><goal>manifest</goal></goals>
-							</pluginExecutionFilter>
-							<action><execute /></action>
-							</pluginExecution>
-						</pluginExecutions>
-					</lifecycleMappingMetadata>
-				</configuration>
-			</plugin>
- 	
- 		<plugin>
- 			<artifactId>maven-compiler-plugin</artifactId>
- 			<version>2.3.2</version>
- 			<configuration>
- 				<source>1.6</source>
- 				<target>1.6</target>
- 				<encoding>UTF-8</encoding>
- 			</configuration>
- 		</plugin>
- 		
- 		<plugin>
- 			<groupId>org.apache.felix</groupId>
- 			<artifactId>maven-bundle-plugin</artifactId>
- 			<version>2.3.7</version>
- 			<extensions>true</extensions>
- 			<configuration>
- 			 	<instructions>
- 			 	</instructions>
- 			</configuration>
- 			<executions>
- 				<execution>
- 					<id>manifest</id>
- 					<phase>process-classes</phase>
- 					<goals><goal>manifest</goal></goals>
- 				</execution>
- 			</executions>
- 		</plugin>
- 	<!-- Try Fix end -->
- 	
-		<plugin>
 				<groupId>ro.isdc.wro4j</groupId>
 				<artifactId>wro4j-maven-plugin</artifactId>
 				<version>${wro4j.version}</version>
 				<executions>
 					<execution>
-					<!-- Test fix manifest -->
-					<id>manifest</id>
-					<phase>generate-resources</phase>
+						<phase>generate-resources</phase>
 						<goals>
-							<!-- was run - not manifest -->
-							<goal>manifest</goal>
+							<goal>run</goal>
 						</goals>
 					</execution>
 				</executions>
