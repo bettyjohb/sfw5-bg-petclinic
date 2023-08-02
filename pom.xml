@@ -6,11 +6,13 @@
 	<artifactId>sfw5-bg-petclinic</artifactId>
 	<version>0.0.3-SNAPSHOT</version>
 
+	<!-- To break project into multi-module - child modules created with "create simple project" -->
 	<modules>
 		<module>pet-clinic-data</module>
 		<module>pet-clinic-web</module>
 	</modules>
 
+	<!-- Because breaking project into multi-module, this goes in this parent pom -->
 	<packaging>pom</packaging>
 
 	<name>sfw5-bg-petclinic</name>

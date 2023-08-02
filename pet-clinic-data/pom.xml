@@ -1,16 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
+	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>guru.springframework5</groupId>
 		<artifactId>sfw5-bg-petclinic</artifactId>
 		<version>0.0.3-SNAPSHOT</version>
 	</parent>
 
-	<modelVersion>4.0.0</modelVersion>
 	<artifactId>pet-clinic-data</artifactId>
 	
 	<!--  Gave cannot find main class.  Was trying to make executable jar (SpringBoot project), but just want simple jar so put this property -->
+	<!--  This is in lieu of fputting executions - goals of repackage under spring-boot-maven-plugin under <build> -->
 	<properties>
 		<spring-boot.repackage.skip>true</spring-boot.repackage.skip>
 	</properties>
@@ -82,13 +81,6 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<executions>
-					<execution>
-					<goals>
-						<goal>repackage</goal>
-					</goals>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>  

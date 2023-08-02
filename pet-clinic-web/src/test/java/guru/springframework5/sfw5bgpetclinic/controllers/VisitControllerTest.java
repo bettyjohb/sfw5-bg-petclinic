@@ -131,7 +131,7 @@ class VisitControllerTest {
 		// Tell Mockito to return dummy Visit when VisitService save is called.  This is not called directly 
 		// by test, but by the VisitController method being tested.  The Controller method adds the Visit to the
 		// Model.  We don't have to. 
-		org.mockito.Mockito.when (visitService.save(org.mockito.ArgumentMatchers.any()))
+		org.mockito.Mockito.when (visitService.save(org.mockito.ArgumentMatchers.any(Visit.class)))
 		                                      .thenReturn(expectedVisit);   // This is the saved visit
 		// "perform" mock POST for mapping /visits/new.
 		// Verify have visit (returned by VisitService save) and redirects to show detail of new saved Visit.
@@ -141,7 +141,7 @@ class VisitControllerTest {
 			   .andExpect(MockMvcResultMatchers.model().attributeExists("visit"));
 		
 		// Verify /owners/new mapping results in Controller invoking save once.  
-		org.mockito.Mockito.verify(visitService, org.mockito.Mockito.times(1)).save(org.mockito.ArgumentMatchers.any());
+		org.mockito.Mockito.verify(visitService, org.mockito.Mockito.times(1)).save(org.mockito.ArgumentMatchers.any(Visit.class));
 		
 		System.out.println("Leaving VisitControllerTest::testProcessCreateVisitForm()!");
 	}
@@ -183,7 +183,7 @@ class VisitControllerTest {
 		// Tell Mockito to return dummy Visit when VisitService save is called.  This is not called directly 
 		// by test, but by the VisitController method being tested.  The Controller method adds the Visit to the
 		// Model.  We don't have to. 
-		org.mockito.Mockito.when (visitService.save(org.mockito.ArgumentMatchers.any()))
+		org.mockito.Mockito.when (visitService.save(org.mockito.ArgumentMatchers.any(Visit.class)))
 		                                               .thenReturn(expectedVisit);
 		
 		// "perform" mock POST for mapping /visits/update.  Save and redirect to show updated Visit. 
@@ -194,7 +194,7 @@ class VisitControllerTest {
 			   .andExpect(MockMvcResultMatchers.model().attributeExists("visit"));
 		
 		// Verify /owners/new mapping results in Controller invoking save once.  
-		org.mockito.Mockito.verify(visitService, org.mockito.Mockito.times(1)).save(org.mockito.ArgumentMatchers.any());
+		org.mockito.Mockito.verify(visitService, org.mockito.Mockito.times(1)).save(org.mockito.ArgumentMatchers.any(Visit.class));
 		
 		System.out.println("Leaving VisitControllerTest::testProcessUpdateVisitForm()!");
 

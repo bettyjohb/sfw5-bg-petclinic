@@ -167,7 +167,7 @@ class OwnerControllerTest {
 		// Create dummy Owner to return when service save is called. 
 		Owner expectedOwner = Owner.builder().build();
 		expectedOwner.setId(1L);
-		org.mockito.Mockito.when (ownerService.save(org.mockito.ArgumentMatchers.any()))
+		org.mockito.Mockito.when (ownerService.save(org.mockito.ArgumentMatchers.any(Owner.class)))
 		                                               .thenReturn(expectedOwner);
 		// "perform" mock POST for mapping /owners/new.
 		// Verify have owner (returned by service save) and redirects to show detail of new saved owner. 
@@ -177,7 +177,7 @@ class OwnerControllerTest {
 			   .andExpect(MockMvcResultMatchers.model().attributeExists("owner"));
 		
 		// Verify /owners/new mapping results in Controller invoking save once.  
-		org.mockito.Mockito.verify(ownerService, org.mockito.Mockito.times(1)).save(org.mockito.ArgumentMatchers.any());
+		org.mockito.Mockito.verify(ownerService, org.mockito.Mockito.times(1)).save(org.mockito.ArgumentMatchers.any(Owner.class));
 	}
 	
 	@Test
@@ -203,7 +203,7 @@ class OwnerControllerTest {
 		// Create dummy Owner to return when service save is called. 
 		Owner expectedOwner = Owner.builder().build();
 		expectedOwner.setId(1L);
-		org.mockito.Mockito.when (ownerService.save(org.mockito.ArgumentMatchers.any()))
+		org.mockito.Mockito.when (ownerService.save(org.mockito.ArgumentMatchers.any(Owner.class)))
 		                                               .thenReturn(expectedOwner);
 		// "perform" mock POST for mapping /owners/update.  Save and redirect to show updaed Owner. 
 		// Verify have owner (returned by service save) and redirects to show detail of owner. 
@@ -212,7 +212,7 @@ class OwnerControllerTest {
 			   .andExpect(MockMvcResultMatchers.view().name("redirect:/owners/1"));  // Back to controller to show
 		
 		// Verify /owners/new mapping results in Controller invoking save once.  
-		org.mockito.Mockito.verify(ownerService, org.mockito.Mockito.times(1)).save(org.mockito.ArgumentMatchers.any());
+		org.mockito.Mockito.verify(ownerService, org.mockito.Mockito.times(1)).save(org.mockito.ArgumentMatchers.any(Owner.class));
 	}
 
 }  // end class 

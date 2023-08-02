@@ -73,7 +73,7 @@ class PetControllerTest {
 		
 		// Create mock PetTypes to be returned by PetTypeService:findAll called by 
 		// @ModelAttribute method of PetController being tested.
-		expectedTypes = new HashSet<>();
+		expectedTypes = new HashSet<PetType>();
 		PetType type = PetType.builder().name("dog").build();
 		type.setId(1L);
 		expectedTypes.add(type);
@@ -128,7 +128,7 @@ class PetControllerTest {
 		// Create dummy Pet to return when service save is called.  That pet is added to model by controller. 
 		Pet expectedPet = Pet.builder().build();
 		expectedPet.setId(1L);
-		org.mockito.Mockito.when (petService.save(org.mockito.ArgumentMatchers.any()))
+		org.mockito.Mockito.when (petService.save(org.mockito.ArgumentMatchers.any(Pet.class)))
 		                                               .thenReturn(expectedPet);
 		// "perform" mock POST for mapping /owners/new.
 		// Verify redirects to show detail of Owner of saved Pet (will look up, no model data needed). 
@@ -137,7 +137,7 @@ class PetControllerTest {
 			   .andExpect(MockMvcResultMatchers.view().name("redirect:/owners/1"));  // Back to controller to show
 		
 		// Verify /owners/new mapping results in Controller invoking save once.  
-		org.mockito.Mockito.verify(petService, org.mockito.Mockito.times(1)).save(org.mockito.ArgumentMatchers.any());
+		org.mockito.Mockito.verify(petService, org.mockito.Mockito.times(1)).save(org.mockito.ArgumentMatchers.any(Pet.class));
 	}
 
 	@Test
@@ -175,7 +175,7 @@ class PetControllerTest {
 		// Create dummy Pet to return when service save is called. 
 		Pet expectedPet = Pet.builder().build();
 		expectedPet.setId(1L);
-		org.mockito.Mockito.when (petService.save(org.mockito.ArgumentMatchers.any()))
+		org.mockito.Mockito.when (petService.save(org.mockito.ArgumentMatchers.any(Pet.class)))
 															.thenReturn(expectedPet);
 		// "perform" mock POST for mapping /owners/1/pets/1/update.  
 		// Save and redirect to show Owner view which will list the updated Pet info. 
@@ -185,7 +185,7 @@ class PetControllerTest {
 			   .andExpect(MockMvcResultMatchers.view().name("redirect:/owners/1")); // Back to controller to show
 		
 		// Verify /owners/1/pets/1/update mapping results in Controller invoking save once.  
-		org.mockito.Mockito.verify(petService, org.mockito.Mockito.times(1)).save(org.mockito.ArgumentMatchers.any());
+		org.mockito.Mockito.verify(petService, org.mockito.Mockito.times(1)).save(org.mockito.ArgumentMatchers.any(Pet.class));
 	}
 
 }  // end class PetControllerTest

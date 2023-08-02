@@ -1,12 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>  
 	<parent>
 		<groupId>guru.springframework5</groupId>
   		<artifactId>sfw5-bg-petclinic</artifactId>
 		<version>0.0.3-SNAPSHOT</version>
 	</parent>
-	<modelVersion>4.0.0</modelVersion>  
 	<artifactId>pet-clinic-web</artifactId>
 
 	<properties>
@@ -15,8 +13,6 @@
 		<webjars-jquery-ui.version>1.11.4</webjars-jquery-ui.version>
 		<webjars-jquery.version>2.2.4</webjars-jquery.version>
 		<wro4j.version>1.8.0</wro4j.version>
-		<!-- <thymeleaf.version>3.0.11.RELEASE</thymeleaf.version> -->
-		<!-- thymeleaf was not in course pom - ??? -->
 	</properties>
 
 	<dependencies>
@@ -32,15 +28,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
-			<!-- NOT IN COURSE POM ??? <version>2.1.0.RELEASE</version> -->
 		</dependency>
-		<!-- COURSE POM DID NOT HAVE ???
-		<dependency>
-			<groupId>org.thymeleaf.extras</groupId>
-			<artifactId>thymeleaf-extras-java8time</artifactId>
-			<version>3.0.1.RELEASE</version>
-		</dependency>
-		-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -49,6 +37,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
+			<optional>true</optional>
 		</dependency>
 
 		<!-- webjars FROM ORIGINAL PET CLINIC -->
@@ -118,12 +107,8 @@
     <!-- Got error at <executions> if I did not include <pluginManagement> </pluginMangaement> right inside <build></build> -->
     <!-- Error was "Plugin execution not covered by lifecycle configuration ..." -->
 	<build>
-	<!--  plugin mangement tag required by eclipe.  Otherwise was getting "plugin execution not covered by lifecycle configuration error  -->
-	<!--  course pom did not use it because using another IDE. -->
-	<pluginManagement>
-
 		<plugins>
-			<!-- FROM ORIGINAL PET CLINIC for WRO plugin] so can generate CSS stylesheet for fragments --> 
+			<!-- FROM ORIGINAL PET CLINIC for WRO plugin] so can generate CSS stylesheet needed by fragments from less stubs --> 
 			<plugin>
 				<groupId>ro.isdc.wro4j</groupId>
 				<artifactId>wro4j-maven-plugin</artifactId>
@@ -131,6 +116,7 @@
 				<executions>
 					<execution>
 						<phase>generate-resources</phase>
+						<?m2e execute onConfiguration,onIncremental?>
 						<goals>
 							<goal>run</goal>
 						</goals>
@@ -157,14 +143,11 @@
 					<dependency>
 						<groupId>org.mockito</groupId>
 						<artifactId>mockito-core</artifactId>
-						<version>2.23.0</version>  
-						<!-- wro4j not updated for Java9 or later, so old Mockito, so hardcode vsn line above - <version>${mockito.version}</version> --> 
+						<version>${mockito.version}</version>
+						<!-- wro4j not updated for Java9 or later, so old Mockito, so hardcode vsn line above -<version>2.22.0</version>   --> 
 					</dependency>
 				</dependencies>
 			</plugin>
 		</plugins>
-
- 	</pluginManagement>
-		
 	</build>
 </project>
