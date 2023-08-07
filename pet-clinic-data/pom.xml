@@ -48,9 +48,8 @@
 				<!-- Without this get error - "TestEngine with ID 'junit-vintage' failed to discover tests." -->
 				<exclusion>
 					<groupId>junit</groupId>
-					<artifactId>junit</artifactId>
-					<!-- WAS group id - org.junit.vintage -->
-					<!-- WAS artifact id - junit-vintage-engine -->
+					<artifactId>junit-vintage-engine</artifactId>
+					<!-- MUST BE junit-vintage-engine -->
 				</exclusion>
 			</exclusions>
 		</dependency>

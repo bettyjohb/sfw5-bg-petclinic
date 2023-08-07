@@ -78,8 +78,6 @@
 					<groupId>junit</groupId>
 					<artifactId>junit-vintage-engine</artifactId>
 					<!-- Without this get error - "TestEngine with ID 'junit-vintage' failed to discover tests." -->
-					<!-- WAS THIS NOT JUNIT - - - TAG groupId >org.junit.vintage /ENDTAGgroupId --> 
-					<!-- versionnTAG artifactId> junit-vintage-engine END TAG artifactId -->
 				</exclusion>
 			</exclusions>
 		</dependency>
