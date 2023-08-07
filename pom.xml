@@ -27,6 +27,7 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
+	<!-- jaxb needed by hibernate for xml tools, but removed from when from Java 8 to 9. -->
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -71,16 +72,13 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<!-- Bring in Maven Surefire plugin. Inherits version (current 2.22.2) -->
+				<!-- Bring in Maven Surefire plugin. Using 2.22.0 and higher includes JUnit 5. -->
 				<!-- Maven may bring in older version by default.  -->
 				<!-- DO NOT include <dependency> for JUnit-platform-surefire-provider or compiler warns to use default from this surefire plugin -->
-				<!-- May not need this! -->
-				<!-- Maven version 3.5.4 has Surefire 2.22.1.  AT THIS POINT, can omit this plugin, but does not hurt so keep in case run with older version -->
-				<!-- Using 2.22.1 and higher includes JUnit 5 -->
+				<!-- Could omit since Maven version 3.5.4 has Surefire 2.22.1, but does not hurt so keep in case run with older version -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<!-- Was including 2.22.2 -->  
-				<version>2.22.0</version> 
+				<!-- ???<versionn>2.22.0<versionn>  --> 
                 <configuration>
                     <argLine>
                         --illegal-access=permit
@@ -89,6 +87,7 @@
 			</plugin>
 
 			<!-- Failsafe plugin for integration tests - any test ending in "IT" -->
+			<!-- illegal asccess permit recommended for Java 11. -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>

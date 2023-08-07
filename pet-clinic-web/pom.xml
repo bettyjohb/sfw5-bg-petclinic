@@ -76,10 +76,10 @@
 				<exclusion>
 				    <!-- WENT BACK TO PRE-SPRING BOOT 2.2.0 so need to manually remove JUNIT4 and include JUPITER (NEXT DEPENDENCY) -->
 					<groupId>junit</groupId>
-					<artifactId>junit</artifactId>
+					<artifactId>junit-vintage-engine</artifactId>
 					<!-- Without this get error - "TestEngine with ID 'junit-vintage' failed to discover tests." -->
 					<!-- WAS THIS NOT JUNIT - - - TAG groupId >org.junit.vintage /ENDTAGgroupId --> 
-					<!-- TAG artifactId> junit-vintage-engine END TAG artifactId -->
+					<!-- versionnTAG artifactId> junit-vintage-engine END TAG artifactId -->
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -98,7 +98,7 @@
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-junit-jupiter</artifactId>
-			<version>2.22.0</version>
+			<!-- <versionn>2.22.0</versionn> -->
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -144,7 +144,7 @@
 						<groupId>org.mockito</groupId>
 						<artifactId>mockito-core</artifactId>
 						<version>${mockito.version}</version>
-						<!-- wro4j not updated for Java9 or later, so old Mockito, so hardcode vsn line above -<version>2.22.0</version>   --> 
+						<!-- Need vsn 2.23.0 or higher to be updated for Java 9 or higher. Defaults to 3.1.0. --> 
 					</dependency>
 				</dependencies>
 			</plugin>
