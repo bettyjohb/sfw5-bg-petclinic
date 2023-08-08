@@ -22,8 +22,8 @@
 		<!-- th:each will iterate through the Set of Vets to display info about each. -->
 		<tr th:each="vet : ${vets}">
 			<td th:text="${vet.firstName + ' ' + vet.lastName}"></td>
-			<td><span th:each="specialty : ${vet.specialties}" th:text="${specialty.description + ' '}"></span>
-			    <span th:if="${vet?.specialties?.size() == 0}">none</span></td>
+			<td><span th:each="specialty,iterStat : ${vet.specialties}" th:text="${specialty.description} + ${!iterStat.last ? ', ' : ''}"></span>
+			    <span th:if="${vet.specialties.size() == 0}">none</span></td>
 		</tr>
 		</tbody>
 	</table>
