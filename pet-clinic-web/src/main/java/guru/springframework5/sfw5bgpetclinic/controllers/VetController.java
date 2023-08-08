@@ -25,7 +25,9 @@ import java.util.Set;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import guru.springframework5.sfw5bgpetclinic.model.Vet;
 import guru.springframework5.sfw5bgpetclinic.services.VetService;
@@ -55,6 +57,15 @@ public class VetController {
     	model.addAttribute("vets", vetService.findAll());
     	return "vets/index";  // Spring looks in templates in vets folder for index.html since Thymeleaf. 
     	                      // If JSP, ViewResolver would provide pre/suffix to build full jsp file/path. 
+    }
+    
+    // --------------------------------
+    // JSON
+ // --------------------------------
+    @GetMapping("/api/vets")	// Use /api to simulate REST API.  @GetMapping to limit to gets.
+    							// Access by run app and enter localhost:8080/api/vets
+    public @ResponseBody Set<Vet> getVetsJson() {
+    	return vetService.findAll();  // Spring creates the JSON for us. 
     }
     
 }  // end class VetController
